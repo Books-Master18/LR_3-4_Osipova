@@ -16,7 +16,6 @@ struct MenuItem {
 
 int main() {
     setlocale(LC_ALL, "ru");
-
     srand(time(NULL));
 
     map<int, MenuItem> menu = {
@@ -24,12 +23,12 @@ int main() {
       {2, {"Создать параметрический Contract", createParameterizedContract}},
       {3, {"Создать Contract со всеми данными", createFullContract}},
       {4, {"Contract from Console", createContractFromConsole}},
-      {5, {"Display All Contracts", displayAllContracts}},
-      {6, {"Calculate Average Re-signing Date", calculateAverageReSigningDate}},
-      {7, {"Добавте новые данные в Contract", createContractFromConsole}}, // Reuse createContractFromConsole to add
-      {8, {"Отсортировать Contract по датам", sortContracts}},
-      {9, {"Test Operators", testContractFunctions}},
-      {10, {"Test Methods", testContractsMethod}},
+      {5, {"Отобразить все данные из Contracts", displayAllContracts}},
+      {6, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
+      {7, {"Добавить новые данные в Contract", createContractFromConsole}}, // Reuse createContractFromConsole to add
+      {8, {"Отсортировать Contract по дате первого подписания", sortContracts}},
+      {9, {"Тестировать операторы", testContractFunctions}},
+      {10, {"тестирование методов", testContractsMethod}},
 
     };
 
