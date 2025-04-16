@@ -11,7 +11,9 @@ using namespace std;
 // Конструктор по умолчанию
 Contract::Contract() : side1("Сторона1"), side2("Сторона2"), signingDate("2023-01-01"), duration(365) {}
 
-// онстроктор, заданный параметрически
+
+
+// Констроктор, заданный параметрически
 Contract::Contract(const std::string& p1, const std::string& p2, const std::string& date, int dur) :
 side1(p1), side2(p2), signingDate(date), duration(dur) {}
 

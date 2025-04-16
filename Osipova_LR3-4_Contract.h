@@ -26,8 +26,6 @@ public:
     // конструктор преобразования
     explicit Contract(const std::string& contractString);
 
-
-
     // Get-методы (inline)
     inline std::string getside1() const { return side1; }
     inline std::string getside2() const { return side2; }
@@ -68,8 +66,8 @@ public:
     friend std::istream& operator>>(std::istream& is, Contract& contract);
 
 
-        // деструктор
-        virtual ~Contract() {}
+    // деструктор
+    virtual ~Contract() {}
 };
 
 
