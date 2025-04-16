@@ -8,8 +8,6 @@
 
 using namespace std;
 
-inline const string CONTRACT_DATA_FILE{ "C:\\program1\\LR_3-4_Osipova\\Contract.txt" };
-
 // Конструктор по умолчанию
 Contract::Contract() : side1("Сторона1"), side2("Сторона2"), signingDate("2023-01-01"), duration(365) {}
 
