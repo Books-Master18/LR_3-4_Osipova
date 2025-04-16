@@ -96,24 +96,6 @@ Contract& Contract::operator=(const Contract& other) {
     return *this;
 }
 
-// void calculateAverageReSigningDate(std::vector<Contract>& contracts)
-// {
-//         if (contracts.empty()) {
-//             std::cout << "No contracts to display.\n";
-//             return;
-//         }
-//         std::string reSigningDates;
-//         int contractIndex;
-//          std::cout << "Enter index for the contract" << std::endl;
-//          std::cin >> contractIndex;
-//          std::cin.ignore();
-//           if(contractIndex >0 && contractIndex <= contracts.size()){
-//             std::cout << contracts[contractIndex-1].calculateAverageReSigningDate() << std::endl;
-//         }
-//         else{
-//             std::cout << "Invalid selection";
-//         }
-//     }
 
 std::string& Contract::operator[](int index){
 		if(index == 0) return side1;

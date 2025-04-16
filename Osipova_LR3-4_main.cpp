@@ -10,9 +10,9 @@ using namespace std;
 
 struct MenuItem {
     string title;
-    void (*action)(std::vector<Contract>&); // Function pointer. It now takes a vector.
-};
+    void (*action)(std::vector<Contract>&); // Указатель на функцию. 
 
+};
 
 int main() {
     setlocale(LC_ALL, "ru");
@@ -25,18 +25,18 @@ int main() {
       {4, {"Contract from Console", createContractFromConsole}},
       {5, {"Отобразить все данные из Contracts", displayAllContracts}},
       {6, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
-      {7, {"Добавить новые данные в Contract", createContractFromConsole}}, // Reuse createContractFromConsole to add
+      {7, {"Добавить новые данные в Contract", createContractFromConsole}}, 
       {8, {"Отсортировать Contract по дате первого подписания", sortContracts}},
       {9, {"Тестировать операторы", testContractFunctions}},
       {10, {"тестирование методов", testContractsMethod}},
 
     };
 
-    std::vector<Contract> contracts; //Vector to store the Contracts
+    std::vector<Contract> contracts; //Вектор для хранения контрактов Contracts
 
     int choice = 0;
     std::cout <<"=============== Меню ==============="<<std::endl;
-    // std::cout <<""<<std::endl;
+    std::cout <<""<<std::endl;
         for (const auto& item : menu) 
         {
             std::cout << "Пункт "<< item.first << ". " << item.second.title << std::endl;
@@ -52,7 +52,7 @@ int main() {
         std::cout <<std::endl<<"===============Action===============" <<std::endl;
         if (menu.count(choice)) {
             if (menu[choice].action != nullptr) {
-                menu[choice].action(contracts); //Pass in vector to use
+                menu[choice].action(contracts);
             }
             else {
                 cout << "Выходи из программы.\n";

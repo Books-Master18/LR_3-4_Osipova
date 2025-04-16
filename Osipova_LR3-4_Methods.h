@@ -27,16 +27,6 @@ std::string enterDate(const std::string& prompt);
 // Function prototypes for allContract operations
 void displayAllContracts();
 
-// std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) 
-// {
-//     std::vector<Contract> sortedContracts = contracts;
-//     std::sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
-//         return a.getSigningDate() < b.getSigningDate();
-//     });
-//     return sortedContracts;
-// }
-
-
 void enterNumber(int& choice, const std::string& prompt); // Объявление enterNumber
 // Function prototypes demonstrating class functionality
 void demonstrateConstructors();
@@ -79,15 +69,6 @@ void testContractsMethod(std::vector<Contract>& contracts) {
     std::cout << "testContractsMethod called.\n";
 }
 
-// void exitProgram(std::vector<Contract>& contracts) {
-//     std::cout << "exitProgram called.\n";
-// }
-
-// void enterNumber(int& choice, const std::string& prompt) {
-//     std::cout << prompt << ": ";
-//     std::cin >> choice;
-//     std::cin.ignore(); // Очистка буфера ввода
-// }
 
 
 // Implementations for input validation
@@ -194,13 +175,6 @@ inline void displayAllContracts() {
 
 
 std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);
-// {
-//     std::vector<Contract> sortedContracts = contracts;
-//     std::sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
-//         return a.getSigningDate() < b.getSigningDate();
-//     });
-//     return sortedContracts;
-// }
 
 inline void demonstrateConstructors() {
     std::cout << "Demonstrating Constructors:" << std::endl;
@@ -271,17 +245,10 @@ inline void demonstrateOperators() {
     std::cout << std::endl;
 
 
-    // calculateAverageReSignDate()  (Предполагается, что такой метод есть в вашем классе Contract)
-    // (Если у вас нет этого метода, уберите или реализуйте его)
-    // std::cout << "\n--- calculateAverageReSignDate() ---" << std::endl;
-    // std::cout << "Average Re-sign Date (c1): " << c1.calculateAverageReSignDate() << std::endl;
 
     // Оператор сравнения <
     std::cout << "\n--- Оператор сравнения < ---" << std::endl;
-    //double avg1 = c1.calculateAverageReSignDate();
-    //double avg2 = c2.calculateAverageReSignDate();
-   // std::cout << "Average Re-sign Date (c1): " << avg1 << std::endl;
-    //std::cout << "Average Re-sign Date (c2): " << avg2 << std::endl;
+
     if (c1 < c2) {
         std::cout << "c1 is earlier than c2" << std::endl;
     } else {
@@ -308,7 +275,7 @@ inline void demonstrateOperators() {
     std::cout << "Duration after c2++: " << c2.getDuration() << std::endl;
     std::cout << "Duration of c4 (result of c2++): " << c4.getDuration() << std::endl;
 
-    //Удалите ,  или реализуйте перегруженный оператор массива
+
 }
 
 
