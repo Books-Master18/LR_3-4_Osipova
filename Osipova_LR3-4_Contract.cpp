@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include <functional>
-#include "Methods.h"
+#include "Osipova_LR3-4_Methods.h"
 
 using namespace std;
 
