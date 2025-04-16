@@ -1,7 +1,6 @@
 #ifndef METHODS_H
 #define METHODS_H
 
-// Include the Contract header
 #include <iostream>
 #include <string>
 #include <vector>
@@ -15,58 +14,178 @@
 extern std::vector<Contract> allContracts;
 
 // Function prototypes for input validation
-bool isValidString(const std::string& str);
-bool isValidInteger(const std::string& str);
-bool isValidDate(const std::string& date);
-
-// Function prototypes for input with validation
-std::string enterString(const std::string& prompt);
-int enterInteger(const std::string& prompt);
-std::string enterDate(const std::string& prompt);
-
-// Function prototypes for allContract operations
-void displayAllContracts();
-
-void enterNumber(int& choice, const std::string& prompt); // Объявление enterNumber
-// Function prototypes demonstrating class functionality
-void demonstrateConstructors();
-void demonstrateOperators();
-
-// Implementation (Move implementation from .cpp here)
-void createDefaultContract(std::vector<Contract>& contracts) {
-    std::cout << "createDefaultContract called.\n";
+bool isValidString(const std::string& str) {
+    return !str.empty() && std::any_of(str.begin(), str.end(), [](char c){ return !std::isspace(c); });
 }
 
-void createParameterizedContract(std::vector<Contract>& contracts) {
-    std::cout << "createParameterizedContract called.\n";
+bool isValidInteger(const std::string& str) {
+    if (str.empty()) return false;
+    for (char c : str) {
+        if (!std::isdigit(c)) return false;
+    }
+    try {
+        std::stoi(str);
+        return true;
+    } catch (const std::out_of_range& oor) {
+        return false;
+    }
 }
 
-void createFullContract(std::vector<Contract>& contracts) {
-    std::cout << "createFullContract called.\n";
+bool isValidDate(const std::string& date) {
+    if (date.length() != 10) return false;
+    if (date[4] != '-' || date[7] != '-') return false;
+    int year, month, day;
+    try {
+        year = std::stoi(date.substr(0, 4));
+        month = std::stoi(date.substr(5, 2));
+        day = std::stoi(date.substr(8, 2));
+    } catch (const std::invalid_argument& ia) {
+        return false;
+    } catch (const std::out_of_range& oor) {
+        return false;
+    }
+    if (month < 1 || month > 12) return false;
+    if (day < 1 || day > 31) return false;
+    if ((month == 4 || month == 6 || month == 9 || month == 11) && day == 31) return false;
+    if (month == 2) {
+        bool isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+        if (day > 29) return false;
+        if (day == 29 && !isLeapYear) return false;
+    }
+    return true;
 }
 
-void createContractFromConsole(std::vector<Contract>& contracts) {
-    std::cout << "createContractFromConsole called.\n";
+// Implementations for input with validation
+std::string enterString(const std::string& prompt) {
+    std::string input;
+    do {
+        std::cout << prompt << ": ";
+        std::getline(std::cin, input);
+        if (isValidString(input)) {
+            break;
+        } else {
+            std::cout << "Invalid input. Please enter a non-empty string.\n";
+        }
+    } while (true);
+    return input;
 }
 
-void displayAllContracts(std::vector<Contract>& contracts) {
-    std::cout << "displayAllContracts called.\n";
+int enterInteger(const std::string& prompt) {
+    std::string input;
+    do {
+        std::cout << prompt << ": ";
+        std::getline(std::cin, input);
+        if (isValidInteger(input)) {
+            break;
+        } else {
+            std::cout << "Invalid input. Please enter a valid integer.\n";
+        }
+    } while (true);
+    return std::stoi(input);
 }
 
-void calculateAverageReSigningDate(std::vector<Contract>& contracts) {
-    std::cout << "calculateAverageReSigningDate called.\n";
+std::string enterDate(const std::string& prompt) {
+   std::string input;
+    do {
+        std::cout << prompt << ": ";
+        std::getline(std::cin, input);
+        if (isValidDate(input)) {
+            break;
+        } else {
+            std::cout << "Invalid input. Please enter a valid date in YYYY-MM-DD format.\n";
+        }
+    } while (true);
+    return input;
 }
 
-void sortContracts(std::vector<Contract>& contracts) {
-    std::cout << "sortContracts called.\n";
+// Implementations for contract operations
+void createDefaultContract() {
+    Contract newContract; // Creates default contract and random values, see class definition
+    allContracts.push_back(newContract);
+    std::cout << "Default contract created and added!\n";
 }
 
-void testContractFunctions(std::vector<Contract>& contracts) {
-    std::cout << "testContractFunctions called.\n";
+void createParameterizedContract() {
+    std::string side1 = enterString("Enter side 1");
+    std::string side2 = enterString("Enter side 2");
+    std::string signingDate = enterDate("Enter signing date (YYYY-MM-DD)");
+    int duration = enterInteger("Enter duration (days)");
+    Contract newContract(side1, side2, signingDate, duration);
+    allContracts.push_back(newContract);
+    std::cout << "Parameterized contract created and added!\n";
 }
 
-void testContractsMethod(std::vector<Contract>& contracts) {
-    std::cout << "testContractsMethod called.\n";
+void createFullContract() {
+   Contract newContract;
+        std::cout << "Enter contract data using operator>>:\n";
+        std::cin >> newContract;
+        allContracts.push_back(newContract);
+        std::cout << "Full contract created and added!\n";
+}
+void createContractFromConsole()
+{
+    createParameterizedContract(); // This can be implemented as a duplicate to createParameterizedContract
+}
+
+
+void displayAllContracts() {
+    if (allContracts.empty()) {
+        std::cout << "No contracts to display.\n";
+        return;
+    }
+
+    std::cout << "--- All Contracts ---\n";
+    for (const auto& contract : allContracts) {
+        std::cout << contract << std::endl; // Assumes << operator is overloaded
+        std::cout << "--------------------\n";
+    }
+}
+
+void calculateAverageReSigningDate() {
+    if (allContracts.empty()) {
+        std::cout << "No contracts to calculate average re-signing date.\n";
+        return;
+    }
+
+    std::cout << "Calculating the average re-signing date is not yet implemented.\n";
+}
+
+void sortContracts() {
+     if (allContracts.empty()) {
+        std::cout << "No contracts to sort.\n";
+        return;
+    }
+    std::sort(allContracts.begin(), allContracts.end());
+    std::cout << "Contracts sorted by signing date.\n";
+}
+
+void testContractFunctions() {
+     if (allContracts.size() < 2) {
+        std::cout << "Need at least 2 contracts to test functions. Create some first.\n";
+        return;
+    }
+     Contract contract1 = allContracts[0];
+    Contract contract2 = allContracts[1];
+
+    // Example using overloaded operators
+    std::cout << "contract1 + contract2:\n" << (contract1 + contract2) << std::endl;
+
+    std::cout << "contract1 - contract2 (Duration): " << (contract1 - contract2).getDuration() << std::endl;
+
+     std::cout << "contract1 * contract2 (Duration): " << (contract1 * contract2).getDuration() << std::endl;
+
+    // Example using []
+    std::cout << "contract1[0] (Side 1): " << contract1[0] << std::endl;
+}
+
+void testContractsMethod() {
+     if (allContracts.empty()) {
+        std::cout << "No contracts to test a method on.\n";
+        return;
+    }
+    //Demonstration of calling methods from Osipova_LR3-4_Contract class
+        Contract contract = allContracts[0]; //get first contract
+        contract.displayContract();
 }
 
 
