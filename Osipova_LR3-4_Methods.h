@@ -9,7 +9,7 @@
 #include <limits>
 #include <ctime>
 #include <iomanip>
-#include "Contract.h" 
+#include "Osipova_LR3-4_Contract.h" 
 
 // описание глобального вектора объектов классов; 
 extern std::vector<Contract> allContracts;

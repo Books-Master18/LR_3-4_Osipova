@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
-#include "Contract.cpp"
+#include "Osipova_LR3-4_Contract.cpp"
 
 using namespace std;
 
