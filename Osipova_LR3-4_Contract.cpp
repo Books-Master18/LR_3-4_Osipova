@@ -3,12 +3,70 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
+#include <ctime>
+#include <random>
 #include "Osipova_LR3-4_Methods.h"
 
 using namespace std;
 
 // Конструктор по умолчанию
-Contract::Contract() : side1("Сторона1"), side2("Сторона2"), signingDate("2023-01-01"), duration(365) {}
+// Contract::Contract() : side1("Сторона1"), side2("Сторона2"), signingDate("2023-01-01"), duration(365) {}
+
+
+
+Contract::Contract() {
+    // Initialize random number generator (use a static instance for the class)
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+
+    // Generate random values
+    std::string sides[] = {"Сторона A", "Сторона B", "Сторона C", "Сторона D"};
+    std::uniform_int_distribution<> side_dist(0, 3); // Choose from 0 to 3
+    side1 = sides[side_dist(gen)];
+    side2 = sides[side_dist(gen)];
+
+
+    // Generate a random date within a year
+    std::uniform_int_distribution<> year_dist(2023, 2024);
+    std::uniform_int_distribution<> month_dist(1, 12);
+    std::uniform_int_distribution<> day_dist(1, 28); // Basic:  Avoiding out-of-range dates. can be improved.
+
+    signingDate = std::to_string(year_dist(gen)) + "-" +
+                  (month_dist(gen) < 10 ? "0" : "") + std::to_string(month_dist(gen)) + "-" +
+                  (day_dist(gen) < 10 ? "0" : "") + std::to_string(day_dist(gen));
+
+
+    // Generate random duration
+    std::uniform_int_distribution<> duration_dist(30, 1000);
+    duration = duration_dist(gen);
+
+    // Generate random reSigningDates (example: 0 to 3 dates)
+    int numReSignings = 1 + rand() % 3; //0 to 2 dates
+    reSigningDates.clear();
+    for (int i = 0; i < numReSignings; ++i) {
+        std::uniform_int_distribution<> day_offset_dist(1, 365);
+        int dayOffset = day_offset_dist(gen);
+
+        //Create a new date based on the signing date.
+        std::tm t{};
+        std::istringstream ss(signingDate);
+        ss >> std::get_time(&t, "%Y-%m-%d");
+
+        if(ss.fail()){
+             std::cerr << "Error parsing signing date for reSigningDate generation.\n";
+             continue; // Skip this re-signing date
+        }
+        std::time_t signingTime = mktime(&t); // Convert to time_t
+
+        std::time_t reSigningTime = signingTime + (dayOffset * 24 * 60 * 60); //Offset.
+        std::tm* reSigningTm = std::localtime(&reSigningTime);
+
+        std::stringstream reSigningSs;
+        reSigningSs << std::put_time(reSigningTm, "%Y-%m-%d");
+        reSigningDates.push_back(reSigningSs.str());
+    }
+}
+
 
 // Констроктор, заданный параметрически
 Contract::Contract(const std::string& p1, const std::string& p2, const std::string& date, int dur) :
