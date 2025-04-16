@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-
 class Contract {
 private:
     std::string side1; //сторона 1

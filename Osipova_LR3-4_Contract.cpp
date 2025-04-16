@@ -115,7 +115,7 @@ std::ostream& operator<<(std::ostream& os, const Contract& contract) {
     return os;
 }
 
-// // Дружественные методы ввода объекта класса на консоль
+ // Дружественные методы ввода объекта класса на консоль
 std::istream& operator>>(std::istream& is, Contract& contract) {
         std::cout << "Введите сторону 1: ";
         std::getline(is >> std::ws, contract.side1); // To read the entire name
