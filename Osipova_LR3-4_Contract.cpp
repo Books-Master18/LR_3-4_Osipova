@@ -3,15 +3,12 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
-#include <functional>
 #include "Osipova_LR3-4_Methods.h"
 
 using namespace std;
 
 // Конструктор по умолчанию
 Contract::Contract() : side1("Сторона1"), side2("Сторона2"), signingDate("2023-01-01"), duration(365) {}
-
-
 
 // Констроктор, заданный параметрически
 Contract::Contract(const std::string& p1, const std::string& p2, const std::string& date, int dur) :
@@ -25,10 +22,10 @@ side1(other.side1), side2(other.side2), signingDate(other.signingDate), duration
 // конструктор преобразования
 Contract::Contract(const std::string& contractString) {
     // Implement parsing logic here (example)
-    side1 = "Первая сторона"; // Placeholder, replace with parsing
-    side2 = "Вторая сторона"; // Placeholder, replace with parsing
-    signingDate = "2024-01-01";     // Placeholder, replace with parsing
-    duration = 365;              // Placeholder, replace with parsing
+    side1 = "Первая сторона"; 
+    side2 = "Вторая сторона"; 
+    signingDate = "2024-01-01";     
+    duration = 365;              
 }
 
 // Метод вывода информации
@@ -49,7 +46,7 @@ void enterNumber(int& choice, const std::string& prompt) {
     std::cin >> choice;
     std::cin.ignore(); // Clear the input buffer
 }
-// Comparison by signing date
+// Сравнение по дате подписания
 bool Contract::operator<(const Contract& other) const {
     return signingDate < other.signingDate;
 }

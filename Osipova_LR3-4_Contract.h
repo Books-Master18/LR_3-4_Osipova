@@ -18,9 +18,7 @@ public:
     // Конструкторы
 
     Contract();  // конструктор по умолчанию
-
     Contract(const std::string& s1, const std::string& s2, const std::string& date, int dur);  // Констроктор, заданный параметрически
-
     Contract(const Contract& other);  // Конструктор копирования
 
     // конструктор преобразования
@@ -42,10 +40,11 @@ public:
 
     // Метод вывода информации
     void displayContract() const;
+    //Вычислить среднее даты переподписания
     std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts);
-    // Function to sort contracts by signing date (Prototype)
+    // Функция сортировки контрактов по дате подписания
     std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);
-    bool loadContractsFromFile(const std::string& filename, std::vector<Contract>& contracts);
+
 
     // перегруженные операции 
     bool operator<(const Contract& other) const; // перегруженные операции сложения, вычитания, умножения, инкремента, декремента, индексирования, присваивания; 
