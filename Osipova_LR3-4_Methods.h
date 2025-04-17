@@ -130,7 +130,7 @@ void createDefaultContract(std::vector<Contract>& contracts) {
     for (int i = 0; i < numContracts; ++i) {
         Contract newContract;
         contracts.push_back(newContract);
-        std::cout << "Контракт по умолчанию №" << i + 1 << " был создан!\n";
+        std::cout << "Контракт по умолчанию № " << i + 1 << " был создан!\n";
         std::cout << newContract << std::endl; // Вывод данных нового контракта
     }
 
@@ -157,12 +157,6 @@ void createParameterizedContract(std::vector<Contract>& contracts) {
     contracts.push_back(newContract); // Исправлено: используем переданный contracts
     std::cout << "Параметрический конструктор был создан и контракт добавлен!\n";
 }
-
-
-
-// void createContractFromConsole(std::vector<Contract>& contracts) {
-//     createParameterizedContract(contracts); // Или другая логика
-// }
 
 void displayAllContracts(const std::vector<Contract>& contracts) {
     if (contracts.empty()) {
