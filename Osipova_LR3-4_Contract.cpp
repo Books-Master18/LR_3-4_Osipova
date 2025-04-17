@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include <algorithm>
 #include <fstream>
 #include <string>
@@ -8,10 +9,6 @@
 #include "Osipova_LR3-4_Methods.h"
 
 using namespace std;
-
-// Конструктор по умолчанию
-// Contract::Contract() : side1("Сторона1"), side2("Сторона2"), signingDate("2023-01-01"), duration(365) {}
-
 
 // Конструктор по умолчанию
 
@@ -99,66 +96,81 @@ void Contract::displayContract() const {
     }
 }
 
-// std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts) {
-//     if (contracts.empty()) {
-//         return "No contracts to calculate average re-signing date.";
-//     }
+std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts) {
+    // (Код для расчета средней даты)
+    if (contracts.empty()) {
+        return "No contracts to calculate average re-signing date.";
+    }
 
-//     int totalYears = 0;
-//     int totalMonths = 0;
-//     int totalDays = 0;
-//     int totalDates = 0;
+    int totalYears = 0;
+    int totalMonths = 0;
+    int totalDays = 0;
+    int totalDates = 0;
 
-//     for (const auto& contract : contracts) {
-//         const auto& reSigningDates = contract.getReSigningDates();
-//         for (const auto& date : reSigningDates) {
-//             int year, month, day;
-//             char dash1, dash2;
-//             std::stringstream ss(date);
+    for (const auto& contract : contracts) {
+        const auto& reSigningDates = contract.getReSigningDates();
+        for (const auto& date : reSigningDates) {
+            int year, month, day;
+            char dash1, dash2;
+            std::stringstream ss(date);
 
-//             if (ss >> year >> dash1 >> month >> dash2 >> day && dash1 == '-' && dash2 == '-') {
-//                 totalYears += year;
-//                 totalMonths += month;
-//                 totalDays += day;
-//                 totalDates++;
-//             } else {
-//                 std::cerr << "Invalid date format: " << date << std::endl;
-//             }
-//         }
-//     }
+            if (ss >> year >> dash1 >> month >> dash2 >> day && dash1 == '-' && dash2 == '-') {
+                totalYears += year;
+                totalMonths += month;
+                totalDays += day;
+                totalDates++;
+            } else {
+                std::cerr << "Invalid date format: " << date << std::endl;
+            }
+        }
+    }
 
-//     if (totalDates == 0) {
-//         return "No valid re-signing dates found in contracts.";
-//     }
+    if (totalDates == 0) {
+        return "No valid re-signing dates found in contracts.";
+    }
 
-//     int averageYear = totalYears / totalDates;
-//     int averageMonth = totalMonths / totalDates;
-//     int averageDay = totalDays / totalDates;
+    int averageYear = totalYears / totalDates;
+    int averageMonth = totalMonths / totalDates;
+    int averageDay = totalDays / totalDates;
 
-//     // Нормализация: приведение месяца и дня к допустимым значениям
-//     while (averageMonth > 12) {
-//         averageYear++;
-//         averageMonth -= 12;
-//     }
+    // Нормализация: приведение месяца и дня к допустимым значениям
+    while (averageMonth > 12) {
+        averageYear++;
+        averageMonth -= 12;
+    }
 
-//     // Внимание: упрощенный подход, не учитывающий количество дней в каждом месяце и високосные годы
-//     while (averageDay > 30) {
-//         averageMonth++;
-//         averageDay -= 30;
-//         if (averageMonth > 12) {
-//             averageYear++;
-//             averageMonth -= 12;
-//         }
-//     }
+    // Внимание: упрощенный подход, не учитывающий количество дней в каждом месяце и високосные годы
+    while (averageDay > 30) {
+        averageMonth++;
+        averageDay -= 30;
+        if (averageMonth > 12) {
+            averageYear++;
+            averageMonth -= 12;
+        }
+    }
 
-//     // Форматирование результата
-//     std::stringstream result;
-//     result << std::setw(4) << std::setfill('0') << averageYear << "-"
-//            << std::setw(2) << std::setfill('0') << averageMonth << "-"
-//            << std::setw(2) << std::setfill('0') << averageDay;
+    // Форматирование результата
+    std::stringstream result;
+    result << std::setw(4) << std::setfill('0') << averageYear << "-"
+           << std::setw(2) << std::setfill('0') << averageMonth << "-"
+           << std::setw(2) << std::setfill('0') << averageDay;
 
-//     return result.str();
-// }
+    return result.str();
+}
+
+void someFunction(std::vector<Contract>& contracts) {
+    // Убедитесь, что вектор contracts не пуст
+    if (contracts.empty()) {
+        std::cout << "Нет контрактов для расчета средней даты переподписания.\n";
+        return; // Выходим из функции, если нет данных
+    }
+
+    // Вызываем функцию calculateAverageReSigningDate
+    std::string averageDate = calculateAverageReSigningDate(contracts);
+
+    // Выводим результат
+    std::cout << "Средняя дата переподписания: " << averageDate << std::endl;
+}
 
 // Function to sort contracts by signing date
 std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) 
