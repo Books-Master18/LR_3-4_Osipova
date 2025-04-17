@@ -4,7 +4,9 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
-#include "Osipova_LR3-4_Contract.cpp"
+#include <functional>
+// #include "Osipova_LR3-4_Contract.cpp"
+#include "Osipova_LR3-4_Methods.h"
 
 using namespace std;
 
@@ -21,14 +23,14 @@ int main() {
     map<int, MenuItem> menu = {
       {1, {"Создать Contract по умолчанию", createDefaultContract}},
       {2, {"Создать параметрический Contract", createParameterizedContract}},
-      {3, {"Создать Contract со всеми данными", createFullContract}},
-      {4, {"Contract from Console", createContractFromConsole}},
-      {5, {"Отобразить все данные из Contracts", displayAllContracts}},
-      {6, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
-      {7, {"Добавить новые данные в Contract", addDataToContract}}, 
-      {8, {"Отсортировать Contract по дате первого подписания", sortContracts}},
-      {9, {"Тестировать операторы", testContractFunctions}},
-      {10, {"тестирование методов", testContractsMethod}},
+    //   {3, {"Создать Contract со всеми данными", createFullContract}},
+    //   {4, {"Contract from Console", createContractFromConsole}},
+    //   {5, {"Отобразить все данные из Contracts", displayAllContracts}},
+    //   {6, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
+    //   {7, {"Добавить новые данные в Contract", addDataToContract}}, 
+    //   {8, {"Отсортировать Contract по дате первого подписания", sortContracts}},
+    //   {9, {"Тестировать операторы", testContractFunctions}},
+    //   {10, {"тестирование методов", testContractsMethod}},
 
     };
 

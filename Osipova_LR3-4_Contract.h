@@ -5,30 +5,33 @@
 #include <string>
 #include <vector>
 
+
+using namespace std;
+
 class Contract {
 private:
-    std::string side1; //сторона 1
-    std::string side2; //сторона 2
-    std::string signingDate; //дата подписания
+    string side1; //сторона 1
+    string side2; //сторона 2
+    string signingDate; //дата подписания
     int duration; //срок действия
-    std::vector<std::string> reSigningDates; //даты повторного подписания
+    vector<string> reSigningDates; //даты повторного подписания
 
 public:
     // Конструкторы
 
     Contract();  // конструктор по умолчанию
-    Contract(const std::string& s1, const std::string& s2, const std::string& date, int dur);  // Констроктор, заданный параметрически
+    Contract(const string& s1, const string& s2, const string& date, int dur);  // Констроктор, заданный параметрически
     Contract(const Contract& other);  // Конструктор копирования
 
     // конструктор преобразования
-    explicit Contract(const std::string& contractString);
+    explicit Contract(const string& contractString);
 
     // Get-методы (inline)
-    inline std::string getside1() const { return side1; }
-    inline std::string getside2() const { return side2; }
-    inline std::string getSigningDate() const { return signingDate; }
+    inline string getside1() const { return side1; }
+    inline string getside2() const { return side2; }
+    inline string getSigningDate() const { return signingDate; }
     inline int getDuration() const { return duration; }
-    inline const std::vector<std::string>& getReSigningDates() const { return reSigningDates; }
+    inline const vector<string>& getReSigningDates() const { return reSigningDates; }
 
     // Set-методы (inline)
     inline void setside1(const std::string& s1) { side1 = s1; }
@@ -39,8 +42,10 @@ public:
 
     // Метод вывода информации
     void displayContract() const;
+
     //Вычислить среднее даты переподписания
-    std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts);
+    string calculateAverageReSigningDate(const std::vector<Contract>& contracts);
+
     // Функция сортировки контрактов по дате подписания
     std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);
 
@@ -56,8 +61,6 @@ public:
     Contract operator--(int);    // Постфиксный декремент
     Contract& operator=(const Contract& other); // перегруженные операции присваивания
     std::string& operator[](int index); // перегруженные операции индексирования;
-
-
 
     // Дружественные методы ввода/вывода объекта класса на консоль
     friend std::ostream& operator<<(std::ostream& os, const Contract& contract);

@@ -13,6 +13,7 @@ using namespace std;
 // Contract::Contract() : side1("Сторона1"), side2("Сторона2"), signingDate("2023-01-01"), duration(365) {}
 
 
+// Конструктор по умолчанию
 
 Contract::Contract() {
     // Initialize random number generator (use a static instance for the class)
@@ -98,12 +99,80 @@ void Contract::displayContract() const {
     }
 }
 
-// перегруженные операции 
-void enterNumber(int& choice, const std::string& prompt) {
-    std::cout << prompt << ": ";
-    std::cin >> choice;
-    std::cin.ignore(); // Clear the input buffer
+// std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts) {
+//     if (contracts.empty()) {
+//         return "No contracts to calculate average re-signing date.";
+//     }
+
+//     int totalYears = 0;
+//     int totalMonths = 0;
+//     int totalDays = 0;
+//     int totalDates = 0;
+
+//     for (const auto& contract : contracts) {
+//         const auto& reSigningDates = contract.getReSigningDates();
+//         for (const auto& date : reSigningDates) {
+//             int year, month, day;
+//             char dash1, dash2;
+//             std::stringstream ss(date);
+
+//             if (ss >> year >> dash1 >> month >> dash2 >> day && dash1 == '-' && dash2 == '-') {
+//                 totalYears += year;
+//                 totalMonths += month;
+//                 totalDays += day;
+//                 totalDates++;
+//             } else {
+//                 std::cerr << "Invalid date format: " << date << std::endl;
+//             }
+//         }
+//     }
+
+//     if (totalDates == 0) {
+//         return "No valid re-signing dates found in contracts.";
+//     }
+
+//     int averageYear = totalYears / totalDates;
+//     int averageMonth = totalMonths / totalDates;
+//     int averageDay = totalDays / totalDates;
+
+//     // Нормализация: приведение месяца и дня к допустимым значениям
+//     while (averageMonth > 12) {
+//         averageYear++;
+//         averageMonth -= 12;
+//     }
+
+//     // Внимание: упрощенный подход, не учитывающий количество дней в каждом месяце и високосные годы
+//     while (averageDay > 30) {
+//         averageMonth++;
+//         averageDay -= 30;
+//         if (averageMonth > 12) {
+//             averageYear++;
+//             averageMonth -= 12;
+//         }
+//     }
+
+//     // Форматирование результата
+//     std::stringstream result;
+//     result << std::setw(4) << std::setfill('0') << averageYear << "-"
+//            << std::setw(2) << std::setfill('0') << averageMonth << "-"
+//            << std::setw(2) << std::setfill('0') << averageDay;
+
+//     return result.str();
+// }
+
+// Function to sort contracts by signing date
+std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) 
+{
+    std::vector<Contract> sortedContracts = contracts;
+    std::sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
+        return a.getSigningDate() < b.getSigningDate();
+    });
+    return sortedContracts;
 }
+
+
+// перегруженные операции 
+
 // Сравнение по дате подписания
 bool Contract::operator<(const Contract& other) const {
     return signingDate < other.signingDate;
@@ -140,7 +209,18 @@ Contract Contract::operator++(int) {
     duration++;
     return temp;
 }
+// Prefix decrement (decrease duration)
+Contract& Contract::operator--() {
+    duration--;
+    return *this;
+}
 
+// Postfix decrement (decrease duration)
+Contract Contract::operator--(int) {
+    Contract temp = *this; // Создаем копию текущего объекта для возврата
+    duration--;             // Уменьшаем значение duration у текущего объекта
+    return temp;            // Возвращаем копию объекта, сделанную до уменьшения
+}
 // Assignment operator
 Contract& Contract::operator=(const Contract& other) {
     if (this != &other) {
@@ -195,12 +275,3 @@ std::istream& operator>>(std::istream& is, Contract& contract) {
         return is;
 }
 
-// Function to sort contracts by signing date
-std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) 
-{
-    std::vector<Contract> sortedContracts = contracts;
-    std::sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
-        return a.getSigningDate() < b.getSigningDate();
-    });
-    return sortedContracts;
-}

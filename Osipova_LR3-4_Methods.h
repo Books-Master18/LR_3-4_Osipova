@@ -10,10 +10,11 @@
 #include <iomanip>
 #include "Osipova_LR3-4_Contract.h" 
 
-// описание глобального вектора объектов классов; 
-extern std::vector<Contract> allContracts;
 
-// Function prototypes for input validation
+// Определение глобального вектора (ОДИН раз в ОДНОМ .cpp файле!)
+std::vector<Contract> allContracts;
+
+// // Function prototypes for input validation
 bool isValidString(const std::string& str) {
     return !str.empty() && std::any_of(str.begin(), str.end(), [](char c){ return !std::isspace(c); });
 }
@@ -106,18 +107,22 @@ std::string enterDate(const std::string& prompt) {
     return input;
 }
 
+void enterNumber(int& choice, const std::string& prompt) {
+    std::cout << prompt << ": ";
+    std::cin >> choice;
+    std::cin.ignore(); // Clear the input buffer
+}
 
-// Реализации операций
-
-//вызов конструктора по умолчанию
-void createDefaultContract() {
-    Contract newContract; // Создает значения по умолчанию и случайные значения
-    allContracts.push_back(newContract);
+// Реализации функций
+void createDefaultContract(std::vector<Contract>& contracts) {
+    Contract newContract;
+    contracts.push_back(newContract);
     std::cout << "Default contract created and added!\n";
 }
 
-// вызов параметризованного конструктора
-void createParameterizedContract() {
+void createParameterizedContract(std::vector<Contract>& contracts) {
+    // Здесь должна быть реализация createParameterizedContract,
+    // которая принимает std::vector<Contract>& contracts
     std::string side1 = enterString("Enter side 1");
     std::string side2 = enterString("Enter side 2");
     std::string signingDate = enterDate("Enter signing date (YYYY-MM-DD)");
@@ -125,220 +130,310 @@ void createParameterizedContract() {
     Contract newContract(side1, side2, signingDate, duration);
     allContracts.push_back(newContract);
     std::cout << "Parameterized contract created and added!\n";
+    std::cout << "createParameterizedContract not implemented yet\n";
 }
 
-void createFullContract() {
-   Contract newContract;
+void createFullContract(std::vector<Contract>& contracts) {
+    // Здесь должна быть реализация createFullContract,
+    // которая принимает std::vector<Contract>& contracts
+       Contract newContract;
         std::cout << "Enter contract data using operator>>:\n";
         std::cin >> newContract;
         allContracts.push_back(newContract);
         std::cout << "Full contract created and added!\n";
+    std::cout << "createFullContract not implemented yet\n";
 }
 
-void createContractFromConsole()
-{
-    createParameterizedContract(); // This can be implemented as a duplicate to createParameterizedContract
+void createContractFromConsole(std::vector<Contract>& contracts) {
+    createParameterizedContract(contracts); // Или другая логика
 }
 
-//отображения всех объектов класса
-void displayAllContracts() {
-    if (allContracts.empty()) {
+void displayAllContracts(const std::vector<Contract>& contracts) {
+    if (contracts.empty()) {
         std::cout << "No contracts to display.\n";
         return;
     }
 
     std::cout << "--- All Contracts ---\n";
-    for (const auto& contract : allContracts) {
-        std::cout << contract << std::endl; // Assumes << operator is overloaded
+    for (const auto& contract : contracts) {
+        std::cout << contract << std::endl; // Предполагается, что оператор << перегружен для Contract
         std::cout << "--------------------\n";
     }
 }
 
-void calculateAverageReSigningDate() {
-    if (allContracts.empty()) {
-        std::cout << "No contracts to calculate average re-signing date.\n";
-        return;
-    }
-
-    std::cout << "Calculating the average re-signing date is not yet implemented.\n";
+void calculateAverageReSigningDate(const std::vector<Contract>& contracts) {
+    // Здесь должна быть реализация calculateAverageReSigningDate,
+    // которая принимает std::vector<Contract>& contracts
+    std::cout << "calculateAverageReSigningDate not implemented yet\n";
 }
 
-void addDataToContract() {
-    if (allContracts.empty()) {
-        std::cout << "Нет контрактов для добавления данных. Пожалуйста, сначала создайте контракты.\n";
-        return;
-    }
-
-    // Выводим список контрактов с номерами
-    std::cout << "Выберите контракт для изменения:\n";
-    for (size_t i = 0; i < allContracts.size(); ++i) {
-        std::cout << i + 1 << ": " << allContracts[i].getside1() << " - " << allContracts[i].getside2() << "\n"; // Пример вывода, можно изменить
-    }
-
-    // Запрашиваем номер контракта у пользователя
-    int choice;
-    std::cout << "Введите номер контракта: ";
-    std::cin >> choice;
-    std::cin.ignore(); // Пропускаем символ новой строки
-
-    // Проверяем корректность ввода
-    if (choice < 1 || choice > allContracts.size()) {
-        std::cout << "Некорректный номер контракта.\n";
-        return;
-    }
-
-    // Получаем выбранный контракт (индекс на 1 меньше введенного номера)
-    Contract& selectedContract = allContracts[choice - 1];
-
-    // Предлагаем пользователю ввести новые данные для контракта
-    std::cout << "Введите новые данные для контракта:\n";
-    std::cin >> selectedContract; // Используем перегруженный оператор >> для ввода данных
-
-    std::cout << "Данные контракта обновлены.\n";
+void addDataToContract(std::vector<Contract>& contracts) {
+    // Здесь должна быть реализация addDataToContract,
+    // которая принимает std::vector<Contract>& contracts
+    std::cout << "addDataToContract not implemented yet\n";
 }
 
-void sortContracts() {
-     if (allContracts.empty()) {
+void sortContracts(std::vector<Contract>& contracts) {
+    if (contracts.empty()) {
         std::cout << "No contracts to sort.\n";
         return;
     }
-    std::sort(allContracts.begin(), allContracts.end());
+    std::sort(contracts.begin(), contracts.end());
     std::cout << "Contracts sorted by signing date.\n";
 }
 
-void testContractFunctions() {
-     if (allContracts.size() < 2) {
-        std::cout << "Need at least 2 contracts to test functions. Create some first.\n";
-        return;
-    }
-     Contract contract1 = allContracts[0];
-    Contract contract2 = allContracts[1];
-
-    // Example using overloaded operators
-    std::cout << "contract1 + contract2:\n" << (contract1 + contract2) << std::endl;
-
-    std::cout << "contract1 - contract2 (Duration): " << (contract1 - contract2).getDuration() << std::endl;
-
-     std::cout << "contract1 * contract2 (Duration): " << (contract1 * contract2).getDuration() << std::endl;
-
-    // Example using []
-    std::cout << "contract1[0] (Side 1): " << contract1[0] << std::endl;
+void testContractFunctions(std::vector<Contract>& contracts) {
+    // Здесь должна быть реализация testContractFunctions,
+    // которая принимает std::vector<Contract>& contracts
+    std::cout << "testContractFunctions not implemented yet\n";
 }
 
-void testContractsMethod() {
-     if (allContracts.empty()) {
-        std::cout << "No contracts to test a method on.\n";
-        return;
-    }
-    //Demonstration of calling methods from Osipova_LR3-4_Contract class
-        Contract contract = allContracts[0]; //get first contract
-        contract.displayContract();
+void testContractsMethod(std::vector<Contract>& contracts) {
+    // Здесь должна быть реализация testContractsMethod,
+    // которая принимает std::vector<Contract>& contracts
+    std::cout << "testContractsMethod not implemented yet\n";
 }
 
 
-std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);
-
-inline void demonstrateConstructors() {
-    std::cout << "Demonstrating Constructors:" << std::endl;
-
-        // Default constructor
-        Contract c1;
-        std::cout << "Default Constructor:" << std::endl << c1;
-
-        // Parameterized constructor
-        Contract c2("PartyA", "PartyB", "2023-10-26", 365);
-        std::cout << "\nParameterized Constructor:" << std::endl << c2;
-
-        // Copy constructor
-        Contract c3(c2);
-        std::cout << "\nCopy Constructor:" << std::endl << c3;
-
-        // Conversion constructor
-        Contract c4("PartyC,PartyD,2024-01-01,180");
-        std::cout << "\nConversion Constructor:" << std::endl << c4;
-
-        allContracts.push_back(c1);
-        allContracts.push_back(c2);
-        allContracts.push_back(c3);
-        allContracts.push_back(c4);
-
-        std::cout << "\nAll contracts created are now stored in the global vector 'allContracts'." << std::endl;
-
-}
-
-inline void demonstrateOperators() {
-    if (allContracts.size() < 2) {
-        std::cout << "Need at least two contracts in 'allContracts' to demonstrate operators.  Use menu option to create them first.\n";
-        return;
-    }
-
-    std::cout << "\nDemonstrating Operators:" << std::endl;
-    Contract& c1 = allContracts[0];
-    Contract& c2 = allContracts[1];
-
-    // GET и SET методы
-    std::cout << "\n--- GET и SET методы ---" << std::endl;
-    std::cout << "side1 (c1): " << c1.getside1() << std::endl;
-    c1.setside1("Updated side1 c1");
-    std::cout << "Updated side1 (c1): " << c1.getside1() << std::endl;
-
-    std::cout << "side2 (c1): " << c1.getside2() << std::endl;
-    c1.setside2("Updated side2 c1");
-    std::cout << "Updated side2 (c1): " << c1.getside2() << std::endl;
-
-    std::cout << "Signing Date (c1): " << c1.getSigningDate() << std::endl;
-    c1.setSigningDate("2024-07-01");
-    std::cout << "Updated Signing Date (c1): " << c1.getSigningDate() << std::endl;
-
-    std::cout << "Duration (c1): " << c1.getDuration() << std::endl;
-    c1.setDuration(730);
-    std::cout << "Updated Duration (c1): " << c1.getDuration() << std::endl;
-
-    std::cout << "Re-signing Dates (c1):";
-    for (const auto& date : c1.getReSigningDates()) {
-        std::cout << " " << date;
-    }
-    std::cout << std::endl;
-    c1.addReSigningDate("2025-01-01");
-    std::cout << "Updated Re-signing Dates (c1):";
-    for (const auto& date : c1.getReSigningDates()) {
-        std::cout << " " << date;
-    }
-    std::cout << std::endl;
+// // описание глобального вектора объектов классов; 
+// extern std::vector<Contract> allContracts;
 
 
 
-    // Оператор сравнения <
-    std::cout << "\n--- Оператор сравнения < ---" << std::endl;
+// // Реализации операций
 
-    if (c1 < c2) {
-        std::cout << "c1 is earlier than c2" << std::endl;
-    } else {
-        std::cout << "c1 is not earlier than c2" << std::endl;
-    }
+// inline void demonstrateConstructors() {
+//     std::cout << "Demonstrating Constructors:" << std::endl;
 
-    // Оператор сложения +
-    std::cout << "\n--- Оператор сложения + ---" << std::endl;
-    Contract c3 = c1 + c2;
-    std::cout << "c1:\n" << c1 << std::endl;
-    std::cout << "c2:\n" << c2 << std::endl;
-    std::cout << "c1 + c2:\n" << c3 << std::endl;
+//         // Default constructor
+//         Contract c1;
+//         std::cout << "Default Constructor:" << std::endl << c1;
 
-    // Оператор префиксного инкремента ++
-    std::cout << "\n--- Оператор префиксного инкремента ++ ---" << std::endl;
-    std::cout << "Duration before ++c1: " << c1.getDuration() << std::endl;
-    ++c1;
-    std::cout << "Duration after ++c1: " << c1.getDuration() << std::endl;
+//         // Parameterized constructor
+//         Contract c2("PartyA", "PartyB", "2023-10-26", 365);
+//         std::cout << "\nParameterized Constructor:" << std::endl << c2;
 
-    // Оператор постфиксного инкремента ++
-    std::cout << "\n--- Оператор постфиксного инкремента ++ ---" << std::endl;
-    std::cout << "Duration before c2++: " << c2.getDuration() << std::endl;
-    Contract c4 = c2++;
-    std::cout << "Duration after c2++: " << c2.getDuration() << std::endl;
-    std::cout << "Duration of c4 (result of c2++): " << c4.getDuration() << std::endl;
+//         // Copy constructor
+//         Contract c3(c2);
+//         std::cout << "\nCopy Constructor:" << std::endl << c3;
+
+//         // Conversion constructor
+//         Contract c4("PartyC,PartyD,2024-01-01,180");
+//         std::cout << "\nConversion Constructor:" << std::endl << c4;
+
+//         allContracts.push_back(c1);
+//         allContracts.push_back(c2);
+//         allContracts.push_back(c3);
+//         allContracts.push_back(c4);
+
+//         std::cout << "\nAll contracts created are now stored in the global vector 'allContracts'." << std::endl;
+
+// }
+
+// //вызов конструктора по умолчанию
+// void createDefaultContract(std::vector<Contract>&) {
+//     Contract newContract; // Создает значения по умолчанию и случайные значения
+//     allContracts.push_back(newContract);
+//     std::cout << "Default contract created and added!\n";
+// }
+
+// // вызов параметризованного конструктора
+// void createParameterizedContract() {
+//     std::string side1 = enterString("Enter side 1");
+//     std::string side2 = enterString("Enter side 2");
+//     std::string signingDate = enterDate("Enter signing date (YYYY-MM-DD)");
+//     int duration = enterInteger("Enter duration (days)");
+//     Contract newContract(side1, side2, signingDate, duration);
+//     allContracts.push_back(newContract);
+//     std::cout << "Parameterized contract created and added!\n";
+// }
+
+// void createFullContract() {
+//    Contract newContract;
+//         std::cout << "Enter contract data using operator>>:\n";
+//         std::cin >> newContract;
+//         allContracts.push_back(newContract);
+//         std::cout << "Full contract created and added!\n";
+// }
+
+// void createContractFromConsole()
+// {
+//     createParameterizedContract(); // This can be implemented as a duplicate to createParameterizedContract
+// }
+
+// //отображения всех объектов класса
+// void displayAllContracts() {
+//     if (allContracts.empty()) {
+//         std::cout << "No contracts to display.\n";
+//         return;
+//     }
+
+//     std::cout << "--- All Contracts ---\n";
+//     for (const auto& contract : allContracts) {
+//         std::cout << contract << std::endl; // Assumes << operator is overloaded
+//         std::cout << "--------------------\n";
+//     }
+// }
+
+// void calculateAverageReSigningDate() {
+//     if (allContracts.empty()) {
+//         std::cout << "No contracts to calculate average re-signing date.\n";
+//         return;
+//     }
+
+//     std::cout << "Calculating the average re-signing date is not yet implemented.\n";
+// }
+
+// void addDataToContract() {
+//     if (allContracts.empty()) {
+//         std::cout << "Нет контрактов для добавления данных. Пожалуйста, сначала создайте контракты.\n";
+//         return;
+//     }
+
+//     // Выводим список контрактов с номерами
+//     std::cout << "Выберите контракт для изменения:\n";
+//     for (size_t i = 0; i < allContracts.size(); ++i) {
+//         std::cout << i + 1 << ": " << allContracts[i].getside1() << " - " << allContracts[i].getside2() << "\n"; // Пример вывода, можно изменить
+//     }
+
+//     // Запрашиваем номер контракта у пользователя
+//     int choice;
+//     std::cout << "Введите номер контракта: ";
+//     std::cin >> choice;
+//     std::cin.ignore(); // Пропускаем символ новой строки
+
+//     // Проверяем корректность ввода
+//     if (choice < 1 || choice > allContracts.size()) {
+//         std::cout << "Некорректный номер контракта.\n";
+//         return;
+//     }
+
+//     // Получаем выбранный контракт (индекс на 1 меньше введенного номера)
+//     Contract& selectedContract = allContracts[choice - 1];
+
+//     // Предлагаем пользователю ввести новые данные для контракта
+//     std::cout << "Введите новые данные для контракта:\n";
+//     std::cin >> selectedContract; // Используем перегруженный оператор >> для ввода данных
+
+//     std::cout << "Данные контракта обновлены.\n";
+// }
+
+// void sortContracts() {
+//      if (allContracts.empty()) {
+//         std::cout << "No contracts to sort.\n";
+//         return;
+//     }
+//     std::sort(allContracts.begin(), allContracts.end());
+//     std::cout << "Contracts sorted by signing date.\n";
+// }
+
+// void testContractFunctions() {
+//      if (allContracts.size() < 2) {
+//         std::cout << "Need at least 2 contracts to test functions. Create some first.\n";
+//         return;
+//     }
+//      Contract contract1 = allContracts[0];
+//     Contract contract2 = allContracts[1];
+
+//     // Example using overloaded operators
+//     std::cout << "contract1 + contract2:\n" << (contract1 + contract2) << std::endl;
+
+//     std::cout << "contract1 - contract2 (Duration): " << (contract1 - contract2).getDuration() << std::endl;
+
+//      std::cout << "contract1 * contract2 (Duration): " << (contract1 * contract2).getDuration() << std::endl;
+
+//     // Example using []
+//     std::cout << "contract1[0] (Side 1): " << contract1[0] << std::endl;
+// }
+
+// void testContractsMethod() {
+//      if (allContracts.empty()) {
+//         std::cout << "No contracts to test a method on.\n";
+//         return;
+//     }
+//     //Demonstration of calling methods from Osipova_LR3-4_Contract class
+//         Contract contract = allContracts[0]; //get first contract
+//         contract.displayContract();
+// }
 
 
-}
+// std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);
+
+
+
+// inline void demonstrateOperators() {
+//     if (allContracts.size() < 2) {
+//         std::cout << "Need at least two contracts in 'allContracts' to demonstrate operators.  Use menu option to create them first.\n";
+//         return;
+//     }
+
+//     std::cout << "\nDemonstrating Operators:" << std::endl;
+//     Contract& c1 = allContracts[0];
+//     Contract& c2 = allContracts[1];
+
+//     // GET и SET методы
+//     std::cout << "\n--- GET и SET методы ---" << std::endl;
+//     std::cout << "side1 (c1): " << c1.getside1() << std::endl;
+//     c1.setside1("Updated side1 c1");
+//     std::cout << "Updated side1 (c1): " << c1.getside1() << std::endl;
+
+//     std::cout << "side2 (c1): " << c1.getside2() << std::endl;
+//     c1.setside2("Updated side2 c1");
+//     std::cout << "Updated side2 (c1): " << c1.getside2() << std::endl;
+
+//     std::cout << "Signing Date (c1): " << c1.getSigningDate() << std::endl;
+//     c1.setSigningDate("2024-07-01");
+//     std::cout << "Updated Signing Date (c1): " << c1.getSigningDate() << std::endl;
+
+//     std::cout << "Duration (c1): " << c1.getDuration() << std::endl;
+//     c1.setDuration(730);
+//     std::cout << "Updated Duration (c1): " << c1.getDuration() << std::endl;
+
+//     std::cout << "Re-signing Dates (c1):";
+//     for (const auto& date : c1.getReSigningDates()) {
+//         std::cout << " " << date;
+//     }
+//     std::cout << std::endl;
+//     c1.addReSigningDate("2025-01-01");
+//     std::cout << "Updated Re-signing Dates (c1):";
+//     for (const auto& date : c1.getReSigningDates()) {
+//         std::cout << " " << date;
+//     }
+//     std::cout << std::endl;
+
+
+
+//     // Оператор сравнения <
+//     std::cout << "\n--- Оператор сравнения < ---" << std::endl;
+
+//     if (c1 < c2) {
+//         std::cout << "c1 is earlier than c2" << std::endl;
+//     } else {
+//         std::cout << "c1 is not earlier than c2" << std::endl;
+//     }
+
+//     // Оператор сложения +
+//     std::cout << "\n--- Оператор сложения + ---" << std::endl;
+//     Contract c3 = c1 + c2;
+//     std::cout << "c1:\n" << c1 << std::endl;
+//     std::cout << "c2:\n" << c2 << std::endl;
+//     std::cout << "c1 + c2:\n" << c3 << std::endl;
+
+//     // Оператор префиксного инкремента ++
+//     std::cout << "\n--- Оператор префиксного инкремента ++ ---" << std::endl;
+//     std::cout << "Duration before ++c1: " << c1.getDuration() << std::endl;
+//     ++c1;
+//     std::cout << "Duration after ++c1: " << c1.getDuration() << std::endl;
+
+//     // Оператор постфиксного инкремента ++
+//     std::cout << "\n--- Оператор постфиксного инкремента ++ ---" << std::endl;
+//     std::cout << "Duration before c2++: " << c2.getDuration() << std::endl;
+//     Contract c4 = c2++;
+//     std::cout << "Duration after c2++: " << c2.getDuration() << std::endl;
+//     std::cout << "Duration of c4 (result of c2++): " << c4.getDuration() << std::endl;
+
+
+// }
 
 
 #endif
