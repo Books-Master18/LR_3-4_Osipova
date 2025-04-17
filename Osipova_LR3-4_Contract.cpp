@@ -241,15 +241,15 @@ std::string& Contract::operator[](int index){
 }
 //// Дружественные методы вывода объекта класса на консоль
 std::ostream& operator<<(std::ostream& os, const Contract& contract) {
-    os << "Сторона 1: " << contract.side1 << "\n";
-    os << "Сторона 2: " << contract.side2 << "\n";
-    os << "Дата первого подписания: " << contract.signingDate << "\n";
-    os << "Срок действия: " << contract.duration << " дней\n";
+    os << "Сторона 1: " << contract.side1 << std::endl;
+    os << "Сторона 2: " << contract.side2 << std::endl;
+    os << "Дата подписания: " << contract.signingDate << std::endl;
+    os << "Продолжительность: " << contract.duration << " дней" << std::endl;
     os << "Даты переподписания: ";
     for (const auto& date : contract.reSigningDates) {
         os << date << " ";
     }
-    os << "\n";
+    os << std::endl;
     return os;
 }
 

@@ -154,7 +154,7 @@ void createParameterizedContract(std::vector<Contract>& contracts) {
         newContract.addReSigningDate(reSigningDate);
     }
 
-    contracts.push_back(newContract); // Исправлено: используем переданный contracts
+    contracts.push_back(newContract); //  добавляем newContract в переданный вектор contracts
     std::cout << "Параметрический конструктор был создан и контракт добавлен!\n";
 }
 
@@ -164,7 +164,7 @@ void displayAllContracts(const std::vector<Contract>& contracts) {
         return;
     }
 
-    std::cout << "--- All Contracts ---\n";
+    std::cout << "--- Все данные контрактов ---\n";
     for (const auto& contract : contracts) {
         std::cout << contract << std::endl; // Предполагается, что оператор << перегружен для Contract
         std::cout << "--------------------\n";

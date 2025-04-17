@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <functional>
 #include "Osipova_LR3-4_Contract.cpp"
 #include "Osipova_LR3-4_Methods.h"
 
@@ -11,23 +12,31 @@ using namespace std;
 
 struct MenuItem {
     string title;
-    void (*action)(std::vector<Contract>&); // Указатель на функцию. 
+    std::function<void(std::vector<Contract>&)> action;
 
+    MenuItem(string title, std::function<void(std::vector<Contract>&)> action) : title(title), action(action) {}
+    MenuItem() : title(""), action(nullptr) {} // If you need a default constructor
 };
+
+// struct MenuItem {
+//     string title;
+//     void (*action)(std::vector<Contract>&); // Указатель на функцию. 
+
+// };
 
 int main() {
     setlocale(LC_ALL, "ru");
     srand(time(NULL));
 
     map<int, MenuItem> menu = {
-      {1, {"Создать Contract по умолчанию", createDefaultContract}},
-      {2, {"Создать параметрический Contract", createParameterizedContract}},
-    // Разобраться с этим пунктом, необходимо, чтобы программа отобразила все данные, включая те, которые мы добавили   {3, {"Отобразить все данные из Contracts", displayAllContracts}},
-    //   {6, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
-    //   {7, {"Добавить новые данные в Contract", addDataToContract}}, 
-    //   {8, {"Отсортировать Contract по дате первого подписания", sortContracts}},
-    //   {9, {"Тестировать операторы", testContractFunctions}},
-    //   {10, {"тестирование методов", testContractsMethod}},
+        {1, {"Создать Contract по умолчанию", createDefaultContract}},
+        {2, {"Создать параметрический Contract", createParameterizedContract}},
+        {3, {"Отобразить все данные из Contracts", displayAllContracts}},
+    //   {4, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
+    //   {5, {"Добавить новые данные в Contract", addDataToContract}}, 
+    //   {6, {"Отсортировать Contract по дате первого подписания", sortContracts}},
+    //   {7, {"Тестировать операторы", testContractFunctions}},
+    //   {8, {"Тестирование методов", testContractsMethod}},
 
     };
 
@@ -48,7 +57,7 @@ int main() {
             std::cout <<"2025 Osipova Aleksandra" << std::endl;
             break;
         }
-        std::cout <<std::endl<<"===============Action===============" <<std::endl;
+        std::cout <<std::endl<<"===============Действие===============" <<std::endl;
         if (menu.count(choice)) {
             if (menu[choice].action != nullptr) {
                 menu[choice].action(contracts);
