@@ -101,7 +101,7 @@ std::string enterDate(const std::string& prompt) {
         if (isValidDate(input)) {
             break;
         } else {
-            std::cout << "Invalid date format. Please enter a date in YYYY-MM-DD format.\n";
+            std::cout << "Неправильный ввод даты. Пожалуйста введите дату в формате ГГГГ-ММ-ДД.\n";
         }
     } while (true);
     return input;
@@ -140,17 +140,17 @@ void createParameterizedContract(std::vector<Contract>& contracts) {
     std::string side1 = enterString("Введите сторону 1: ");
     std::string side2 = enterString("Введите сторону 2: ");
     std::string signingDate = enterDate("Введите дату подписания (ГГГГ-MM-ДД): ");
-    int duration = enterInteger("Введите продолжительность (дни): ");
+    int duration = enterInteger("Введите продолжительность (дни) ");
 
     int numReSigningDates;
-    std::cout << "Сколько дат переподписания вы хотите добавить? ";
+    std::cout << "Сколько дат переподписания вы хотите добавить: ";
     std::cin >> numReSigningDates;
     std::cin.ignore(); // Очистить буфер ввода
 
     Contract newContract(side1, side2, signingDate, duration);
 
     for (int i = 0; i < numReSigningDates; ++i) {
-        std::string reSigningDate = enterDate("Введите дату переподписания #" + std::to_string(i + 1) + ": ");
+        std::string reSigningDate = enterDate("Введите дату переподписания №" + std::to_string(i + 1) + ": ");
         newContract.addReSigningDate(reSigningDate);
     }
 
@@ -160,7 +160,7 @@ void createParameterizedContract(std::vector<Contract>& contracts) {
 
 void displayAllContracts(const std::vector<Contract>& contracts) {
     if (contracts.empty()) {
-        std::cout << "No contracts to display.\n";
+        std::cout << "Нет данных для отображения.\n";
         return;
     }
 
