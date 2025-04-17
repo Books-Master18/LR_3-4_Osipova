@@ -13,10 +13,6 @@
 // описание глобального вектора объектов классов; 
 extern std::vector<Contract> allContracts;
 
-std::string enterString(const std::string& prompt);
-std::string enterDate(const std::string& prompt);
-int enterInteger(const std::string& prompt);
-
 // Function prototypes for input validation
 bool isValidString(const std::string& str) {
     return !str.empty() && std::any_of(str.begin(), str.end(), [](char c){ return !std::isspace(c); });
@@ -59,7 +55,9 @@ bool isValidDate(const std::string& date) {
     return true;
 }
 
-// Implementations for input with validation
+
+
+// Реализации для ввода с проверкой
 std::string enterString(const std::string& prompt) {
     std::string input;
     do {
@@ -74,14 +72,51 @@ std::string enterString(const std::string& prompt) {
     return input;
 }
 
+int enterInteger(const std::string& prompt) {
+    std::string input;
+    int number;
+    do {
+        std::cout << prompt << ": ";
+        std::getline(std::cin, input);
+        if (isValidInteger(input)) {
+            try {
+                number = std::stoi(input);
+                break;
+            } catch (const std::out_of_range& oor) {
+                std::cout << "Number out of range. Please enter a smaller number.\n";
+            }
+        } else {
+            std::cout << "Invalid input. Please enter an integer.\n";
+        }
+    } while (true);
+    return number;
+}
 
-// Implementations for contract operations
+std::string enterDate(const std::string& prompt) {
+    std::string input;
+    do {
+        std::cout << prompt << ": ";
+        std::getline(std::cin, input);
+        if (isValidDate(input)) {
+            break;
+        } else {
+            std::cout << "Invalid date format. Please enter a date in YYYY-MM-DD format.\n";
+        }
+    } while (true);
+    return input;
+}
+
+
+// Реализации операций
+
+//вызов конструктора по умолчанию
 void createDefaultContract() {
-    Contract newContract; // Creates default contract and random values, see class definition
+    Contract newContract; // Создает значения по умолчанию и случайные значения
     allContracts.push_back(newContract);
     std::cout << "Default contract created and added!\n";
 }
 
+// вызов параметризованного конструктора
 void createParameterizedContract() {
     std::string side1 = enterString("Enter side 1");
     std::string side2 = enterString("Enter side 2");
@@ -99,12 +134,13 @@ void createFullContract() {
         allContracts.push_back(newContract);
         std::cout << "Full contract created and added!\n";
 }
+
 void createContractFromConsole()
 {
     createParameterizedContract(); // This can be implemented as a duplicate to createParameterizedContract
 }
 
-
+//отображения всех объектов класса
 void displayAllContracts() {
     if (allContracts.empty()) {
         std::cout << "No contracts to display.\n";
@@ -125,6 +161,40 @@ void calculateAverageReSigningDate() {
     }
 
     std::cout << "Calculating the average re-signing date is not yet implemented.\n";
+}
+
+void addDataToContract() {
+    if (allContracts.empty()) {
+        std::cout << "Нет контрактов для добавления данных. Пожалуйста, сначала создайте контракты.\n";
+        return;
+    }
+
+    // Выводим список контрактов с номерами
+    std::cout << "Выберите контракт для изменения:\n";
+    for (size_t i = 0; i < allContracts.size(); ++i) {
+        std::cout << i + 1 << ": " << allContracts[i].getside1() << " - " << allContracts[i].getside2() << "\n"; // Пример вывода, можно изменить
+    }
+
+    // Запрашиваем номер контракта у пользователя
+    int choice;
+    std::cout << "Введите номер контракта: ";
+    std::cin >> choice;
+    std::cin.ignore(); // Пропускаем символ новой строки
+
+    // Проверяем корректность ввода
+    if (choice < 1 || choice > allContracts.size()) {
+        std::cout << "Некорректный номер контракта.\n";
+        return;
+    }
+
+    // Получаем выбранный контракт (индекс на 1 меньше введенного номера)
+    Contract& selectedContract = allContracts[choice - 1];
+
+    // Предлагаем пользователю ввести новые данные для контракта
+    std::cout << "Введите новые данные для контракта:\n";
+    std::cin >> selectedContract; // Используем перегруженный оператор >> для ввода данных
+
+    std::cout << "Данные контракта обновлены.\n";
 }
 
 void sortContracts() {
@@ -164,109 +234,6 @@ void testContractsMethod() {
         Contract contract = allContracts[0]; //get first contract
         contract.displayContract();
 }
-
-
-// Implementations for input validation
-// inline bool isValidString(const std::string& str) {
-//     return !str.empty() && std::any_of(str.begin(), str.end(), [](char c){ return !std::isspace(c); });
-// }
-
-// inline bool isValidInteger(const std::string& str) {
-//     if (str.empty()) return false;
-//     for (char c : str) {
-//         if (!std::isdigit(c)) return false;
-//     }
-//     try {
-//         std::stoi(str);
-//         return true;
-//     } catch (const std::out_of_range& oor) {
-//         return false;
-//     }
-// }
-
-// inline bool isValidDate(const std::string& date) {
-//     if (date.length() != 10) return false;
-//     if (date[4] != '-' || date[7] != '-') return false;
-//     int year, month, day;
-//     try {
-//         year = std::stoi(date.substr(0, 4));
-//         month = std::stoi(date.substr(5, 2));
-//         day = std::stoi(date.substr(8, 2));
-//     } catch (const std::invalid_argument& ia) {
-//         return false;
-//     } catch (const std::out_of_range& oor) {
-//         return false;
-//     }
-//     if (month < 1 || month > 12) return false;
-//     if (day < 1 || day > 31) return false;
-//     if ((month == 4 || month == 6 || month == 9 || month == 11) && day == 31) return false;
-//     if (month == 2) {
-//         bool isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
-//         if (day > 29) return false;
-//         if (day == 29 && !isLeapYear) return false;
-//     }
-//     return true;
-// }
-
-// Implementations for input with validation
-// inline std::string enterString(const std::string& prompt) {
-//     std::string input;
-//     do {
-//         std::cout << prompt << ": ";
-//         std::getline(std::cin, input);
-//         if (isValidString(input)) {
-//             break;
-//         } else {
-//             std::cout << "Invalid input. Please enter a non-empty string.\n";
-//         }
-//     } while (true);
-//     return input;
-// }
-
-inline int enterInteger(const std::string& prompt) {
-    std::string input;
-    int number;
-    do {
-        std::cout << prompt << ": ";
-        std::getline(std::cin, input);
-        if (isValidInteger(input)) {
-            try {
-                number = std::stoi(input);
-                break;
-            } catch (const std::out_of_range& oor) {
-                std::cout << "Number out of range. Please enter a smaller number.\n";
-            }
-        } else {
-            std::cout << "Invalid input. Please enter an integer.\n";
-        }
-    } while (true);
-    return number;
-}
-
-inline std::string enterDate(const std::string& prompt) {
-    std::string input;
-    do {
-        std::cout << prompt << ": ";
-        std::getline(std::cin, input);
-        if (isValidDate(input)) {
-            break;
-        } else {
-            std::cout << "Invalid date format. Please enter a date in YYYY-MM-DD format.\n";
-        }
-    } while (true);
-    return input;
-}
-// inline void displayAllContracts() {
-//     if (allContracts.empty()) {
-//         std::cout << "No contracts to display.\n";
-//         return;
-//     }
-//     for (size_t i = 0; i < allContracts.size(); ++i) {
-//         std::cout << "Contract " << i + 1 << ":\n" << allContracts[i] << "\n";
-//     }
-//     std::cout << "---------------------------\n";
-// }
-
 
 
 std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);

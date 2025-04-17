@@ -25,7 +25,7 @@ int main() {
       {4, {"Contract from Console", createContractFromConsole}},
       {5, {"Отобразить все данные из Contracts", displayAllContracts}},
       {6, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
-      {7, {"Добавить новые данные в Contract", createContractFromConsole}}, 
+      {7, {"Добавить новые данные в Contract", addDataToContract}}, 
       {8, {"Отсортировать Contract по дате первого подписания", sortContracts}},
       {9, {"Тестировать операторы", testContractFunctions}},
       {10, {"тестирование методов", testContractsMethod}},
