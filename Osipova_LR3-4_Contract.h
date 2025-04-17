@@ -46,11 +46,11 @@ public:
     //Вычислить среднее даты переподписания
 
 
-    // std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts);
+    std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts);
 
     // Функция сортировки контрактов по дате подписания
     std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);
-
+    // void addReSigningDate(const std::string& date);
 
     // перегруженные операции 
     bool operator<(const Contract& other) const; // перегруженные операции сложения, вычитания, умножения, инкремента, декремента, индексирования, присваивания; 

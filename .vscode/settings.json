@@ -61,6 +61,9 @@
         "list": "cpp",
         "unordered_map": "cpp",
         "xhash": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "chrono": "cpp",
+        "forward_list": "cpp",
+        "ratio": "cpp"
     }
 }

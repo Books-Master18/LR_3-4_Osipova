@@ -2,7 +2,6 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
-#include <fstream>
 #include <string>
 #include <ctime>
 #include <random>
@@ -77,11 +76,54 @@ side1(other.side1), side2(other.side2), signingDate(other.signingDate), duration
 
 // конструктор преобразования
 Contract::Contract(const std::string& contractString) {
-    // Implement parsing logic here (example)
-    side1 = "Первая сторона"; 
-    side2 = "Вторая сторона"; 
-    signingDate = "2024-01-01";     
-    duration = 365;              
+    std::stringstream ss(contractString);
+    std::string token;
+
+    // Попытка извлечь данные из строки, разделитель - запятая (,)
+    // Пример входной строки: "Сторона1,Сторона2,2024-10-27,365"
+
+    // 1. side1
+    if (std::getline(ss, token, ',')) {
+        side1 = token;
+    } else {
+        side1 = "Неизвестная сторона 1"; // или выбросить исключение
+        std::cerr << "Ошибка: Не удалось извлечь side1 из строки: " << contractString << std::endl;
+    }
+
+    // 2. side2
+    if (std::getline(ss, token, ',')) {
+        side2 = token;
+    } else {
+        side2 = "Неизвестная сторона 2"; // или выбросить исключение
+         std::cerr << "Ошибка: Не удалось извлечь side2 из строки: " << contractString << std::endl;
+    }
+
+    // 3. signingDate
+    if (std::getline(ss, token, ',')) {
+        signingDate = token;
+        // Дополнительная проверка формата даты может быть добавлена здесь
+    } else {
+        signingDate = "2000-01-01"; // или выбросить исключение
+         std::cerr << "Ошибка: Не удалось извлечь signingDate из строки: " << contractString << std::endl;
+    }
+
+    // 4. duration
+    if (std::getline(ss, token, ',')) {
+         try {
+            duration = std::stoi(token);
+        }
+        catch (const std::invalid_argument& e) {
+             duration = 0; // Или другое значение по умолчанию
+             std::cerr << "Ошибка: Не удалось преобразовать duration в число из строки: " << contractString << std::endl;
+        }
+        catch (const std::out_of_range& e) {
+             duration = 0; // Или другое значение по умолчанию
+             std::cerr << "Ошибка: duration выходит за пределы диапазона из строки: " << contractString << std::endl;
+        }
+    } else {
+        duration = 0; // или выбросить исключение
+         std::cerr << "Ошибка: Не удалось извлечь duration из строки: " << contractString << std::endl;
+    }
 }
 
 // Метод вывода информации
@@ -97,17 +139,118 @@ void Contract::displayContract() const {
 }
 
 
+// std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts) {
+//     if (contracts.empty()) {
+//         return "Нет контрактов для расчета средней даты переподписания.";
+//     }
 
+//     std::chrono::system_clock::time_point sum_tp{};
+//     int valid_dates_count = 0;
+
+//     for (const auto& contract : contracts) {
+//         for (const auto& reSigningDateStr : contract.getReSigningDates()) {
+//             std::tm t{};
+//             std::istringstream ss(reSigningDateStr);
+//             ss >> std::get_time(&t, "%Y-%m-%d");
+//             if (ss.fail()) {
+//                 std::cerr << "Неправильный формат даты: " << reSigningDateStr << std::endl;
+//                 continue; // Пропускаем эту дату
+//             }
+
+//             std::time_t tt = mktime(&t);
+//             if (tt == -1) {
+//                 std::cerr << "Не удалось преобразовать дату в time_t: " << reSigningDateStr << std::endl;
+//                 continue;
+//             }
+
+//             std::chrono::system_clock::time_point tp = std::chrono::system_clock::from_time_t(tt);
+//             sum_tp += (tp - std::chrono::system_clock::time_point{}); // Add duration from epoch
+//             valid_dates_count++;
+//         }
+//     }
+
+//     if (valid_dates_count == 0) {
+//         return "Нет допустимых дат переподписания для расчета.";
+//     }
+
+//     std::chrono::system_clock::time_point average_tp =
+//         std::chrono::system_clock::time_point{} + (sum_tp / valid_dates_count);
+
+//     std::time_t average_tt = std::chrono::system_clock::to_time_t(average_tp);
+//     std::tm* average_tm = std::localtime(&average_tt);
+
+//     if (average_tm == nullptr) {
+//         return "Ошибка при преобразовании средней даты.";
+//     }
+
+//     std::stringstream ss;
+//     ss << std::put_time(average_tm, "%Y-%m-%d");
+//     return ss.str();
+// }
 
 // Function to sort contracts by signing date
-std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) 
-{
+std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) {
     std::vector<Contract> sortedContracts = contracts;
     std::sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
         return a.getSigningDate() < b.getSigningDate();
     });
     return sortedContracts;
 }
+
+
+// Function to display sorted contracts
+void displaySortedContracts(const std::vector<Contract>& contracts) {
+    if (contracts.empty()) {
+        std::cout << "Нет контрактов для отображения.\n";
+        return;
+    }
+
+    std::vector<Contract> sortedContracts = sortContractsBySigningDate(contracts); // Sort the contracts
+
+    std::cout << "--- Отсортированные контракты (по дате подписания) ---\n";
+    for (const auto& contract : sortedContracts) {
+        std::cout << contract << std::endl; // Предполагается, что оператор << перегружен для Contract
+        std::cout << "--------------------\n";
+    }
+}
+
+// void addReSigningDate(const std::string& date) {
+//     reSigningDates.push_back(date);
+// }
+
+// void addDataToContractUser() {
+//     if (allContracts.empty()) {
+//         std::cout << "Нет контрактов для добавления данных. Пожалуйста, сначала создайте контракты.\n";
+//         return;
+//     }
+
+//     // Выводим список контрактов с номерами
+//     std::cout << "Выберите контракт для изменения:\n";
+//     for (size_t i = 0; i < allContracts.size(); ++i) {
+//         std::cout << i + 1 << ": " << allContracts[i].getside1() << " - " << allContracts[i].getside2() << "\n"; // Пример вывода, можно изменить
+//     }
+
+//     // Запрашиваем номер контракта у пользователя
+//     int choice;
+//     std::cout << "Введите номер контракта: ";
+//     std::cin >> choice;
+//     std::cin.ignore(); // Пропускаем символ новой строки
+
+//     // Проверяем корректность ввода
+//     if (choice < 1 || choice > allContracts.size()) {
+//         std::cout << "Некорректный номер контракта.\n";
+//         return;
+//     }
+
+//     // Получаем выбранный контракт (индекс на 1 меньше введенного номера)
+//     Contract& selectedContract = allContracts[choice - 1];
+
+//     // Предлагаем пользователю ввести новые данные для контракта
+//     std::cout << "Введите новые данные для контракта:\n";
+//     std::cin >> selectedContract; // Используем перегруженный оператор >> для ввода данных
+
+//     std::cout << "Данные контракта обновлены.\n";
+// }
 
 
 // перегруженные операции 
@@ -174,11 +317,14 @@ Contract& Contract::operator=(const Contract& other) {
 
 
 std::string& Contract::operator[](int index){
+
+
 		if(index == 0) return side1;
 		if(index == 1) return side2;
 		return side1;
 }
-//// Дружественные методы вывода объекта класса на консоль
+
+
 std::ostream& operator<<(std::ostream& os, const Contract& contract) {
     os << "Сторона 1: " << contract.side1 << std::endl;
     os << "Сторона 2: " << contract.side2 << std::endl;
@@ -192,25 +338,35 @@ std::ostream& operator<<(std::ostream& os, const Contract& contract) {
     return os;
 }
 
- // Дружественные методы ввода объекта класса на консоль
+
 std::istream& operator>>(std::istream& is, Contract& contract) {
-        std::cout << "Введите сторону 1: ";
-        std::getline(is >> std::ws, contract.side1); // To read the entire name
+    std::cout << "Введите сторону 1: ";
+    std::getline(is, contract.side1);
 
-        std::cout << "Введите сторону 2: ";
-        std::getline(is >> std::ws, contract.side2);
+    std::cout << "Введите сторону 2: ";
+    std::getline(is, contract.side2);
 
-        std::cout << "Введите дату 1 подписания (ГГГГ-ММ-ДД): ";
-        std::getline(is >> std::ws, contract.signingDate); // Read the signing date
+    std::cout << "Введите дату подписания (ГГГГ-MM-ДД): ";
+    std::getline(is, contract.signingDate);
 
-        std::cout << "Введите строк действия (в днях): ";
-        is >> contract.duration; // Read the duration
+    std::cout << "Введите продолжительность (дни): ";
+    is >> contract.duration;
+    is.ignore(); // Consume newline after reading duration
 
-        std::cout << "Введите даты переподписания (ГГГГ-ММ-ДД): ";
-         std::string date;
-          std::cin>>date;
-           contract.reSigningDates.push_back(date);
-       
-        return is;
+    // Get re-signing dates
+    contract.reSigningDates.clear(); // Clear previous dates
+    int numReSigningDates;
+    std::cout << "Сколько дат переподписания вы хотите добавить? ";
+    is >> numReSigningDates;
+    is.ignore(); // Consume newline after reading number of dates
+
+    for (int i = 0; i < numReSigningDates; ++i) {
+        std::string date;
+        std::cout << "Введите дату переподписания №" << i + 1 << ": ";
+        std::getline(is, date);
+        contract.addReSigningDate(date);
+    }
+
+    return is;
 }
 
