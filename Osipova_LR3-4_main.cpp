@@ -1,4 +1,4 @@
-#include "Osipova_LR3-4_Methods.h"
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <ctime>
 #include <functional>
+#include "Osipova_LR3-4_Methods.h"
 // #include "Osipova_LR3-4_Contract.cpp"
 
 
@@ -33,9 +34,9 @@ int main() {
         {1, {"Создать Contract по умолчанию", createDefaultContract}},
         {2, {"Создать параметрический Contract", createParameterizedContract}},
         {3, {"Отобразить все данные из Contracts", displayAllContracts}},
-        {4, {"Вычислить среднее даты переподписания", someFunction}},
+        // {4, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
     //   {5, {"Добавить новые данные в Contract", addDataToContract}}, 
-    //   {6, {"Отсортировать Contract по дате первого подписания", sortContracts}},
+      {6, {"Отсортировать Contract по дате первого подписания", sortContracts}},
     //   {7, {"Тестировать операторы", testContractFunctions}},
     //   {8, {"Тестирование методов", testContractsMethod}},
 
