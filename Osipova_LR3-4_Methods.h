@@ -115,38 +115,54 @@ void enterNumber(int& choice, const std::string& prompt) {
 
 // Реализации функций
 void createDefaultContract(std::vector<Contract>& contracts) {
-    Contract newContract;
-    contracts.push_back(newContract);
-    std::cout << "Default contract created and added!\n";
+    int numContracts;
+
+    do {
+        std::cout << "Введите сколько контрактов по умолчанию вы хотите создать (1-5): ";
+        std::cin >> numContracts;
+        std::cin.ignore(); // Очистить буфер ввода
+
+        if (numContracts < 1 || numContracts > 5) {
+            std::cout << "Пожалуйста, введите число от 1 до 5.\n";
+        }
+    } while (numContracts < 1 || numContracts > 5);
+
+    for (int i = 0; i < numContracts; ++i) {
+        Contract newContract;
+        contracts.push_back(newContract);
+        std::cout << "Контракт по умолчанию №" << i + 1 << " был создан!\n";
+        std::cout << newContract << std::endl; // Вывод данных нового контракта
+    }
+
 }
 
 void createParameterizedContract(std::vector<Contract>& contracts) {
-    // Здесь должна быть реализация createParameterizedContract,
-    // которая принимает std::vector<Contract>& contracts
-    std::string side1 = enterString("Enter side 1");
-    std::string side2 = enterString("Enter side 2");
-    std::string signingDate = enterDate("Enter signing date (YYYY-MM-DD)");
-    int duration = enterInteger("Enter duration (days)");
+    std::string side1 = enterString("Введите сторону 1: ");
+    std::string side2 = enterString("Введите сторону 2: ");
+    std::string signingDate = enterDate("Введите дату подписания (ГГГГ-MM-ДД): ");
+    int duration = enterInteger("Введите продолжительность (дни): ");
+
+    int numReSigningDates;
+    std::cout << "Сколько дат переподписания вы хотите добавить? ";
+    std::cin >> numReSigningDates;
+    std::cin.ignore(); // Очистить буфер ввода
+
     Contract newContract(side1, side2, signingDate, duration);
-    allContracts.push_back(newContract);
-    std::cout << "Parameterized contract created and added!\n";
-    std::cout << "createParameterizedContract not implemented yet\n";
+
+    for (int i = 0; i < numReSigningDates; ++i) {
+        std::string reSigningDate = enterDate("Введите дату переподписания #" + std::to_string(i + 1) + ": ");
+        newContract.addReSigningDate(reSigningDate);
+    }
+
+    contracts.push_back(newContract); // Исправлено: используем переданный contracts
+    std::cout << "Параметрический конструктор был создан и контракт добавлен!\n";
 }
 
-void createFullContract(std::vector<Contract>& contracts) {
-    // Здесь должна быть реализация createFullContract,
-    // которая принимает std::vector<Contract>& contracts
-       Contract newContract;
-        std::cout << "Enter contract data using operator>>:\n";
-        std::cin >> newContract;
-        allContracts.push_back(newContract);
-        std::cout << "Full contract created and added!\n";
-    std::cout << "createFullContract not implemented yet\n";
-}
 
-void createContractFromConsole(std::vector<Contract>& contracts) {
-    createParameterizedContract(contracts); // Или другая логика
-}
+
+// void createContractFromConsole(std::vector<Contract>& contracts) {
+//     createParameterizedContract(contracts); // Или другая логика
+// }
 
 void displayAllContracts(const std::vector<Contract>& contracts) {
     if (contracts.empty()) {

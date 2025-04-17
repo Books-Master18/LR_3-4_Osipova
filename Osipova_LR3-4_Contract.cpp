@@ -21,8 +21,8 @@ Contract::Contract() {
     static std::mt19937 gen(rd());
 
     // Generate random values
-    std::string sides[] = {"Сторона A", "Сторона B", "Сторона C", "Сторона D"};
-    std::uniform_int_distribution<> side_dist(0, 3); // Choose from 0 to 3
+    std::string sides[] = {"Сторона A", "Сторона B", "Сторона C", "Сторона D", "Сторона E"};
+    std::uniform_int_distribution<> side_dist(0, 5); // Choose from 0 to 5
     side1 = sides[side_dist(gen)];
     side2 = sides[side_dist(gen)];
 
@@ -54,7 +54,7 @@ Contract::Contract() {
         ss >> std::get_time(&t, "%Y-%m-%d");
 
         if(ss.fail()){
-             std::cerr << "Error parsing signing date for reSigningDate generation.\n";
+             std::cerr << "Ошибка при генерации.\n";
              continue; // Skip this re-signing date
         }
         std::time_t signingTime = mktime(&t); // Convert to time_t
