@@ -10,6 +10,7 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
+#include <limits>  // Для numeric_limits
 
 // Определение глобального вектора 
 std::vector<Contract> allContracts;
@@ -185,14 +186,15 @@ void addDataToContractUser() {
     }
 
     // Запрашиваем номер контракта у пользователя
-    int choice;
+    std::size_t choice;
     std::cout << "Введите номер контракта: ";
     std::cin >> choice;
-    std::cin.ignore(); // Пропускаем символ новой строки
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Пропускаем символ новой строки + игнорируем остаток строки
 
     // Проверяем корректность ввода
-    if (choice < 1 || choice > allContracts.size()) {
+    if (std::cin.fail() || choice < 1 || choice > allContracts.size()) {
         std::cout << "Некорректный номер контракта.\n";
+        std::cin.clear(); // Сбрасываем флаг ошибки cin
         return;
     }
 
@@ -204,8 +206,8 @@ void addDataToContractUser() {
     std::cin >> selectedContract; // Используем перегруженный оператор >> для ввода данных
 
     std::cout << "Данные контракта обновлены.\n";
+    std::cout << "Новые данные контракта: " << selectedContract.getside1() << " - " << selectedContract.getside2() << "\n";  // Выводим обновленные данные
 }
-
 
 
 

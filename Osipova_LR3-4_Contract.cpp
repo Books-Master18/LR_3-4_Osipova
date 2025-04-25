@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -5,7 +6,9 @@
 #include <string>
 #include <ctime>
 #include <random>
-#include "Osipova_LR3-4_Methods.h"
+#include <vector>
+#include "Osipova_LR3-4_Contract.h" 
+// #include "Osipova_LR3-4_Methods.h"
 
 using namespace std;
 
@@ -138,56 +141,6 @@ void Contract::displayContract() const {
     }
 }
 
-
-// std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts) {
-//     if (contracts.empty()) {
-//         return "Нет контрактов для расчета средней даты переподписания.";
-//     }
-
-//     std::chrono::system_clock::time_point sum_tp{};
-//     int valid_dates_count = 0;
-
-//     for (const auto& contract : contracts) {
-//         for (const auto& reSigningDateStr : contract.getReSigningDates()) {
-//             std::tm t{};
-//             std::istringstream ss(reSigningDateStr);
-//             ss >> std::get_time(&t, "%Y-%m-%d");
-//             if (ss.fail()) {
-//                 std::cerr << "Неправильный формат даты: " << reSigningDateStr << std::endl;
-//                 continue; // Пропускаем эту дату
-//             }
-
-//             std::time_t tt = mktime(&t);
-//             if (tt == -1) {
-//                 std::cerr << "Не удалось преобразовать дату в time_t: " << reSigningDateStr << std::endl;
-//                 continue;
-//             }
-
-//             std::chrono::system_clock::time_point tp = std::chrono::system_clock::from_time_t(tt);
-//             sum_tp += (tp - std::chrono::system_clock::time_point{}); // Add duration from epoch
-//             valid_dates_count++;
-//         }
-//     }
-
-//     if (valid_dates_count == 0) {
-//         return "Нет допустимых дат переподписания для расчета.";
-//     }
-
-//     std::chrono::system_clock::time_point average_tp =
-//         std::chrono::system_clock::time_point{} + (sum_tp / valid_dates_count);
-
-//     std::time_t average_tt = std::chrono::system_clock::to_time_t(average_tp);
-//     std::tm* average_tm = std::localtime(&average_tt);
-
-//     if (average_tm == nullptr) {
-//         return "Ошибка при преобразовании средней даты.";
-//     }
-
-//     std::stringstream ss;
-//     ss << std::put_time(average_tm, "%Y-%m-%d");
-//     return ss.str();
-// }
-
 // Function to sort contracts by signing date
 std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) {
     std::vector<Contract> sortedContracts = contracts;
@@ -214,43 +167,6 @@ void displaySortedContracts(const std::vector<Contract>& contracts) {
     }
 }
 
-// void addReSigningDate(const std::string& date) {
-//     reSigningDates.push_back(date);
-// }
-
-// void addDataToContractUser() {
-//     if (allContracts.empty()) {
-//         std::cout << "Нет контрактов для добавления данных. Пожалуйста, сначала создайте контракты.\n";
-//         return;
-//     }
-
-//     // Выводим список контрактов с номерами
-//     std::cout << "Выберите контракт для изменения:\n";
-//     for (size_t i = 0; i < allContracts.size(); ++i) {
-//         std::cout << i + 1 << ": " << allContracts[i].getside1() << " - " << allContracts[i].getside2() << "\n"; // Пример вывода, можно изменить
-//     }
-
-//     // Запрашиваем номер контракта у пользователя
-//     int choice;
-//     std::cout << "Введите номер контракта: ";
-//     std::cin >> choice;
-//     std::cin.ignore(); // Пропускаем символ новой строки
-
-//     // Проверяем корректность ввода
-//     if (choice < 1 || choice > allContracts.size()) {
-//         std::cout << "Некорректный номер контракта.\n";
-//         return;
-//     }
-
-//     // Получаем выбранный контракт (индекс на 1 меньше введенного номера)
-//     Contract& selectedContract = allContracts[choice - 1];
-
-//     // Предлагаем пользователю ввести новые данные для контракта
-//     std::cout << "Введите новые данные для контракта:\n";
-//     std::cin >> selectedContract; // Используем перегруженный оператор >> для ввода данных
-
-//     std::cout << "Данные контракта обновлены.\n";
-// }
 
 
 // перегруженные операции 
