@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -8,7 +7,6 @@
 #include <random>
 #include <vector>
 #include "Osipova_LR3-4_Contract.h" 
-// #include "Osipova_LR3-4_Methods.h"
 
 using namespace std;
 
@@ -67,9 +65,8 @@ Contract::Contract() {
     }
 }
 
-
 // Констроктор, заданный параметрически
-Contract::Contract(const std::string& p1, const std::string& p2, const std::string& date, int dur) :
+Contract::Contract(const std::string& p1, const string& p2, const string& date, int dur) :
 side1(p1), side2(p2), signingDate(date), duration(dur) {}
 
 // Конструктор копирования
@@ -78,7 +75,7 @@ side1(other.side1), side2(other.side2), signingDate(other.signingDate), duration
     reSigningDates(other.reSigningDates) {}
 
 // конструктор преобразования
-Contract::Contract(const std::string& contractString) {
+Contract::Contract(const string& contractString) {
     std::stringstream ss(contractString);
     std::string token;
 
@@ -142,7 +139,7 @@ void Contract::displayContract() const {
 }
 
 // Function to sort contracts by signing date
-std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts) {
+std::vector<Contract> sortContractsBySigningDate(const vector<Contract>& contracts) {
     std::vector<Contract> sortedContracts = contracts;
     std::sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
         return a.getSigningDate() < b.getSigningDate();
@@ -152,7 +149,7 @@ std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& co
 
 
 // Function to display sorted contracts
-void displaySortedContracts(const std::vector<Contract>& contracts) {
+void displaySortedContracts(const vector<Contract>& contracts) {
     if (contracts.empty()) {
         std::cout << "Нет контрактов для отображения.\n";
         return;
@@ -166,7 +163,6 @@ void displaySortedContracts(const std::vector<Contract>& contracts) {
         std::cout << "--------------------\n";
     }
 }
-
 
 
 // перегруженные операции 
@@ -232,7 +228,7 @@ Contract& Contract::operator=(const Contract& other) {
 }
 
 
-std::string& Contract::operator[](int index){
+string& Contract::operator[](int index){
 
 
 		if(index == 0) return side1;
@@ -241,7 +237,7 @@ std::string& Contract::operator[](int index){
 }
 
 
-std::ostream& operator<<(std::ostream& os, const Contract& contract) {
+ostream& operator<<(ostream& os, const Contract& contract) {
     os << "Сторона 1: " << contract.side1 << std::endl;
     os << "Сторона 2: " << contract.side2 << std::endl;
     os << "Дата подписания: " << contract.signingDate << std::endl;
@@ -255,31 +251,31 @@ std::ostream& operator<<(std::ostream& os, const Contract& contract) {
 }
 
 
-std::istream& operator>>(std::istream& is, Contract& contract) {
-    std::cout << "Введите сторону 1: ";
-    std::getline(is, contract.side1);
+istream& operator>>(istream& is, Contract& contract) {
+    cout << "Введите сторону 1: ";
+    getline(is, contract.side1);
 
-    std::cout << "Введите сторону 2: ";
-    std::getline(is, contract.side2);
+    cout << "Введите сторону 2: ";
+    getline(is, contract.side2);
 
-    std::cout << "Введите дату подписания (ГГГГ-MM-ДД): ";
-    std::getline(is, contract.signingDate);
+    cout << "Введите дату подписания (ГГГГ-MM-ДД): ";
+    getline(is, contract.signingDate);
 
-    std::cout << "Введите продолжительность (дни): ";
+    cout << "Введите продолжительность (дни): ";
     is >> contract.duration;
     is.ignore(); // Consume newline after reading duration
 
     // Get re-signing dates
     contract.reSigningDates.clear(); // Clear previous dates
     int numReSigningDates;
-    std::cout << "Сколько дат переподписания вы хотите добавить? ";
+    cout << "Сколько дат переподписания вы хотите добавить? ";
     is >> numReSigningDates;
     is.ignore(); // Consume newline after reading number of dates
 
     for (int i = 0; i < numReSigningDates; ++i) {
-        std::string date;
-        std::cout << "Введите дату переподписания №" << i + 1 << ": ";
-        std::getline(is, date);
+        string date;
+        cout << "Введите дату переподписания №" << i + 1 << ": ";
+        getline(is, date);
         contract.addReSigningDate(date);
     }
 
