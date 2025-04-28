@@ -35,7 +35,7 @@ public:
 
     // Метод вывода информации
     void displayContract() const;
-    void addReSigningDate(const std::string& date); // Теперь принимает дату
+    void addReSigningDate(const std::string& date);
     
     // перегруженные операции 
     bool operator<(const Contract& other) const;

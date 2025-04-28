@@ -58,54 +58,81 @@ bool isValidDate(const std::string& date) {
 }
 
 
-// Реализации для ввода с проверкой
+// // Реализации для ввода с проверкой
+
+
+// std::string enterString(const std::string& prompt) {
+//     std::string input;
+//     do {
+//         std::cout << prompt << ": ";
+//         std::getline(std::cin, input);
+//         if (isValidString(input)) {
+//             break;
+//         } else {
+//             std::cout << "Invalid input. Please enter a non-empty string.\n";
+//         }
+//     } while (true);
+//     return input;
+// }
+
+// int enterInteger(const std::string& prompt) {
+//     std::string input;
+//     int number;
+//     do {
+//         std::cout << prompt << ": ";
+//         std::getline(std::cin, input);
+//         if (isValidInteger(input)) {
+//             try {
+//                 number = std::stoi(input);
+//                 break;
+//             } catch (const std::out_of_range& oor) {
+//                 std::cout << "Number out of range. Please enter a smaller number.\n";
+//             }
+//         } else {
+//             std::cout << "Invalid input. Please enter an integer.\n";
+//         }
+//     } while (true);
+//     return number;
+// }
+
+// std::string enterDate(const std::string& prompt) {
+//     std::string input;
+//     do {
+//         std::cout << prompt << ": ";
+//         std::getline(std::cin, input);
+//         if (isValidDate(input)) {
+//             break;
+//         } else {
+//             std::cout << "Неправильный ввод даты. Пожалуйста введите дату в формате ГГГГ-ММ-ДД.\n";
+//         }
+//     } while (true);
+//     return input;
+// }
+
+// (Предполагается, что эти функции определены где-то еще)
 std::string enterString(const std::string& prompt) {
     std::string input;
-    do {
-        std::cout << prompt << ": ";
-        std::getline(std::cin, input);
-        if (isValidString(input)) {
-            break;
-        } else {
-            std::cout << "Invalid input. Please enter a non-empty string.\n";
-        }
-    } while (true);
+    std::cout << prompt;
+    std::getline(std::cin, input);
     return input;
-}
-
-int enterInteger(const std::string& prompt) {
-    std::string input;
-    int number;
-    do {
-        std::cout << prompt << ": ";
-        std::getline(std::cin, input);
-        if (isValidInteger(input)) {
-            try {
-                number = std::stoi(input);
-                break;
-            } catch (const std::out_of_range& oor) {
-                std::cout << "Number out of range. Please enter a smaller number.\n";
-            }
-        } else {
-            std::cout << "Invalid input. Please enter an integer.\n";
-        }
-    } while (true);
-    return number;
 }
 
 std::string enterDate(const std::string& prompt) {
-    std::string input;
-    do {
-        std::cout << prompt << ": ";
-        std::getline(std::cin, input);
-        if (isValidDate(input)) {
-            break;
-        } else {
-            std::cout << "Неправильный ввод даты. Пожалуйста введите дату в формате ГГГГ-ММ-ДД.\n";
-        }
-    } while (true);
-    return input;
+    std::string date;
+    std::cout << prompt;
+    std::cin >> date;
+    std::cin.ignore(); // Очистить буфер ввода после cin >> date
+    return date;
 }
+
+int enterInteger(const std::string& prompt) {
+    int num;
+    std::cout << prompt;
+    std::cin >> num;
+    std::cin.ignore(); // Очистить буфер ввода после cin >> num
+    return num;
+}
+
 
 void enterNumber(int& choice, const std::string& prompt) {
     std::cout << prompt << ": ";
@@ -139,25 +166,26 @@ void createDefaultContract(std::vector<Contract>& contracts) {
 }
 
 void createParameterizedContract(std::vector<Contract>& contracts) {
-    std::string side1 = enterString("Введите сторону 1: ");
-    std::string side2 = enterString("Введите сторону 2: ");
-    std::string signingDate = enterDate("Введите дату подписания (ГГГГ-MM-ДД): ");
-    int duration = enterInteger("Введите продолжительность (дни) ");
-
-    int numReSigningDates;
-    std::cout << "Сколько дат переподписания вы хотите добавить: ";
-    std::cin >> numReSigningDates;
-    std::cin.ignore(); // Очистить буфер ввода
+    std::string side1 = enterString("Введите сторону 1 (Нужно написать только название на англ.): ");
+    std::string side2 = enterString("Введите сторону 2 (Нужно написать только название на англ.): ");
+    std::string signingDate = enterDate("Введите дату подписания за период от 2006 до 2025 гг. (ГГГГ-MM-ДД): ");
+    int duration = enterInteger("Введите продолжительность (дни): ");
 
     Contract newContract(side1, side2, signingDate, duration);
+
+    // Добавление дат переподписания (необязательно)
+    int numReSigningDates;
+    std::cout << "Сколько дат переподписания вы хотите добавить? (0 если не нужно): ";
+    std::cin >> numReSigningDates;
+    std::cin.ignore();
 
     for (int i = 0; i < numReSigningDates; ++i) {
         std::string reSigningDate = enterDate("Введите дату переподписания №" + std::to_string(i + 1) + ": ");
         newContract.addReSigningDate(reSigningDate);
     }
 
-    contracts.push_back(newContract); //  добавляем newContract в переданный вектор contracts
-    std::cout << "Параметрический конструктор был создан и контракт добавлен!\n";
+    contracts.push_back(newContract);
+    std::cout << "Контракт успешно добавлен!\n";
 }
 
 void displayAllContracts(const std::vector<Contract>& contracts) {
@@ -168,12 +196,12 @@ void displayAllContracts(const std::vector<Contract>& contracts) {
 
     std::cout << "--- Все данные контрактов ---\n";
     for (const auto& contract : contracts) {
-        std::cout << contract << std::endl; // Предполагается, что оператор << перегружен для Contract
+        std::cout << contract << std::endl; 
         std::cout << "--------------------\n";
     }
 }
 
-void addDataToContractUser() {
+void addDataToContractUser(std::vector<Contract>& allContracts) {
     if (allContracts.empty()) {
         std::cout << "Нет контрактов для добавления данных. Пожалуйста, сначала создайте контракты.\n";
         return;
@@ -189,25 +217,31 @@ void addDataToContractUser() {
     std::size_t choice;
     std::cout << "Введите номер контракта: ";
     std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Пропускаем символ новой строки + игнорируем остаток строки
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     // Проверяем корректность ввода
     if (std::cin.fail() || choice < 1 || choice > allContracts.size()) {
         std::cout << "Некорректный номер контракта.\n";
-        std::cin.clear(); // Сбрасываем флаг ошибки cin
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         return;
     }
 
     // Получаем выбранный контракт (индекс на 1 меньше введенного номера)
     Contract& selectedContract = allContracts[choice - 1];
 
-    // Предлагаем пользователю ввести новые данные для контракта
-    std::cout << "Введите новые данные для контракта:\n";
-    std::cin >> selectedContract; // Используем перегруженный оператор >> для ввода данных
+    // Get the new re-signing date from the user
+    std::string newReSigningDate;
+    std::cout << "Введите новую дату переподписания (YYYY-MM-DD): ";
+    std::getline(std::cin, newReSigningDate);
 
-    std::cout << "Данные контракта обновлены.\n";
-    std::cout << "Новые данные контракта: " << selectedContract.getside1() << " - " << selectedContract.getside2() << "\n";  // Выводим обновленные данные
+    // Add the re-signing date to the selected contract
+    selectedContract.addReSigningDate(newReSigningDate);
+
+    std::cout << "Дата переподписания добавлена.\n";
+    std::cout << "Новая дата переподписания: " << newReSigningDate << "\n";
 }
+
 
 
 

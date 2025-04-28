@@ -14,28 +14,28 @@ using namespace std;
 
 Contract::Contract() {
     // Initialize random number generator (use a static instance for the class)
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
+    static random_device rd;
+    static mt19937 gen(rd());
 
     // Generate random values
-    std::string sides[] = {"Сторона A", "Сторона B", "Сторона C", "Сторона D", "Сторона E"};
-    std::uniform_int_distribution<> side_dist(0, 5); // Choose from 0 to 5
+    string sides[] = {"Сторона A", "Сторона B", "Сторона C", "Сторона D", "Сторона E"};
+    uniform_int_distribution<> side_dist(0, 4); // Choose from 0 to 4
     side1 = sides[side_dist(gen)];
     side2 = sides[side_dist(gen)];
 
 
     // Generate a random date within a year
-    std::uniform_int_distribution<> year_dist(2023, 2024);
-    std::uniform_int_distribution<> month_dist(1, 12);
-    std::uniform_int_distribution<> day_dist(1, 28); // Basic:  Avoiding out-of-range dates. can be improved.
+    uniform_int_distribution<> year_dist(2023, 2024);
+    uniform_int_distribution<> month_dist(1, 12);
+    uniform_int_distribution<> day_dist(1, 28); // Basic:  Avoiding out-of-range dates. can be improved.
 
-    signingDate = std::to_string(year_dist(gen)) + "-" +
-                  (month_dist(gen) < 10 ? "0" : "") + std::to_string(month_dist(gen)) + "-" +
-                  (day_dist(gen) < 10 ? "0" : "") + std::to_string(day_dist(gen));
+    signingDate = to_string(year_dist(gen)) + "-" +
+                  (month_dist(gen) < 10 ? "0" : "") + to_string(month_dist(gen)) + "-" +
+                  (day_dist(gen) < 10 ? "0" : "") + to_string(day_dist(gen));
 
 
     // Generate random duration
-    std::uniform_int_distribution<> duration_dist(30, 1000);
+    uniform_int_distribution<> duration_dist(30, 1000);
     duration = duration_dist(gen);
 
     // Generate random reSigningDates (example: 0 to 3 dates)
@@ -46,27 +46,27 @@ Contract::Contract() {
         int dayOffset = day_offset_dist(gen);
 
         //Create a new date based on the signing date.
-        std::tm t{};
-        std::istringstream ss(signingDate);
-        ss >> std::get_time(&t, "%Y-%m-%d");
+        tm t{};
+        istringstream ss(signingDate);
+        ss >> get_time(&t, "%Y-%m-%d");
 
         if(ss.fail()){
              std::cerr << "Ошибка при генерации.\n";
              continue; // Skip this re-signing date
         }
-        std::time_t signingTime = mktime(&t); // Convert to time_t
+        time_t signingTime = mktime(&t); // Convert to time_t
 
-        std::time_t reSigningTime = signingTime + (dayOffset * 24 * 60 * 60); //Offset.
-        std::tm* reSigningTm = std::localtime(&reSigningTime);
+        time_t reSigningTime = signingTime + (dayOffset * 24 * 60 * 60); //Offset.
+        tm* reSigningTm = std::localtime(&reSigningTime);
 
-        std::stringstream reSigningSs;
-        reSigningSs << std::put_time(reSigningTm, "%Y-%m-%d");
+        stringstream reSigningSs;
+        reSigningSs << put_time(reSigningTm, "%Y-%m-%d");
         reSigningDates.push_back(reSigningSs.str());
     }
 }
 
 // Констроктор, заданный параметрически
-Contract::Contract(const std::string& p1, const string& p2, const string& date, int dur) :
+Contract::Contract(const string& p1, const string& p2, const string& date, int dur) :
 side1(p1), side2(p2), signingDate(date), duration(dur) {}
 
 // Конструктор копирования
@@ -76,53 +76,53 @@ side1(other.side1), side2(other.side2), signingDate(other.signingDate), duration
 
 // конструктор преобразования
 Contract::Contract(const string& contractString) {
-    std::stringstream ss(contractString);
-    std::string token;
+    stringstream ss(contractString);
+    string token;
 
     // Попытка извлечь данные из строки, разделитель - запятая (,)
     // Пример входной строки: "Сторона1,Сторона2,2024-10-27,365"
 
     // 1. side1
-    if (std::getline(ss, token, ',')) {
+    if (getline(ss, token, ',')) {
         side1 = token;
     } else {
         side1 = "Неизвестная сторона 1"; // или выбросить исключение
-        std::cerr << "Ошибка: Не удалось извлечь side1 из строки: " << contractString << std::endl;
+        std::cerr << "Ошибка: Не удалось извлечь side1 из строки: " << contractString << endl;
     }
 
     // 2. side2
-    if (std::getline(ss, token, ',')) {
+    if (getline(ss, token, ',')) {
         side2 = token;
     } else {
         side2 = "Неизвестная сторона 2"; // или выбросить исключение
-         std::cerr << "Ошибка: Не удалось извлечь side2 из строки: " << contractString << std::endl;
+         cerr << "Ошибка: Не удалось извлечь side2 из строки: " << contractString << endl;
     }
 
     // 3. signingDate
-    if (std::getline(ss, token, ',')) {
+    if (getline(ss, token, ',')) {
         signingDate = token;
         // Дополнительная проверка формата даты может быть добавлена здесь
     } else {
         signingDate = "2000-01-01"; // или выбросить исключение
-         std::cerr << "Ошибка: Не удалось извлечь signingDate из строки: " << contractString << std::endl;
+         cerr << "Ошибка: Не удалось извлечь signingDate из строки: " << contractString << endl;
     }
 
     // 4. duration
-    if (std::getline(ss, token, ',')) {
+    if (getline(ss, token, ',')) {
          try {
-            duration = std::stoi(token);
+            duration = stoi(token);
         }
-        catch (const std::invalid_argument& e) {
+        catch (const invalid_argument& e) {
              duration = 0; // Или другое значение по умолчанию
-             std::cerr << "Ошибка: Не удалось преобразовать duration в число из строки: " << contractString << std::endl;
+             cerr << "Ошибка: Не удалось преобразовать duration в число из строки: " << contractString << endl;
         }
         catch (const std::out_of_range& e) {
              duration = 0; // Или другое значение по умолчанию
-             std::cerr << "Ошибка: duration выходит за пределы диапазона из строки: " << contractString << std::endl;
+             std::cerr << "Ошибка: duration выходит за пределы диапазона из строки: " << contractString << endl;
         }
     } else {
         duration = 0; // или выбросить исключение
-         std::cerr << "Ошибка: Не удалось извлечь duration из строки: " << contractString << std::endl;
+         cerr << "Ошибка: Не удалось извлечь duration из строки: " << contractString << endl;
     }
 }
 
@@ -130,37 +130,42 @@ Contract::Contract(const string& contractString) {
 void Contract::displayContract() const {
     cout << "Сторона 1: " << side1 << endl;
     cout << "Сторона 2: " << side2 << endl;
-    cout << "Дата подписания: " << signingDate << std::endl;
-    std::cout << "Срок действия: " << duration << " дней" << std::endl;
-    std::cout << "Даты переподписания:" << std::endl;
+    cout << "Дата подписания: " << signingDate << endl;
+    cout << "Срок действия: " << duration << " дней" << endl;
+    cout << "Даты переподписания:" << endl;
     for (const auto& date : reSigningDates) {
-        std::cout << "  " << date << std::endl;
+        cout << "  " << date << endl;
     }
 }
 
+
 // Function to sort contracts by signing date
-std::vector<Contract> sortContractsBySigningDate(const vector<Contract>& contracts) {
-    std::vector<Contract> sortedContracts = contracts;
-    std::sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
+vector<Contract> sortContractsBySigningDate(const vector<Contract>& contracts) {
+    vector<Contract> sortedContracts = contracts;
+    sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
         return a.getSigningDate() < b.getSigningDate();
     });
     return sortedContracts;
 }
 
+// Implementation of the method to add a re-signing date
+void Contract::addReSigningDate(const string& date) {
+    reSigningDates.push_back(date);
+}
 
 // Function to display sorted contracts
 void displaySortedContracts(const vector<Contract>& contracts) {
     if (contracts.empty()) {
-        std::cout << "Нет контрактов для отображения.\n";
+        cout << "Нет контрактов для отображения.\n";
         return;
     }
 
-    std::vector<Contract> sortedContracts = sortContractsBySigningDate(contracts); // Sort the contracts
+    vector<Contract> sortedContracts = sortContractsBySigningDate(contracts); // Sort the contracts
 
-    std::cout << "--- Отсортированные контракты (по дате подписания) ---\n";
+    cout << "--- Отсортированные контракты (по дате подписания) ---\n";
     for (const auto& contract : sortedContracts) {
-        std::cout << contract << std::endl; // Предполагается, что оператор << перегружен для Contract
-        std::cout << "--------------------\n";
+        cout << contract << endl; // Предполагается, что оператор << перегружен для Contract
+        cout << "--------------------\n";
     }
 }
 
@@ -238,8 +243,8 @@ string& Contract::operator[](int index){
 
 
 ostream& operator<<(ostream& os, const Contract& contract) {
-    os << "Сторона 1: " << contract.side1 << std::endl;
-    os << "Сторона 2: " << contract.side2 << std::endl;
+    os << "Сторона 1: Сторона " << contract.side1 << std::endl;
+    os << "Сторона 2: Сторона " << contract.side2 << std::endl;
     os << "Дата подписания: " << contract.signingDate << std::endl;
     os << "Продолжительность: " << contract.duration << " дней" << std::endl;
     os << "Даты переподписания: ";
