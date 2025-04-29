@@ -17,50 +17,71 @@ Contract::Contract() {
     static random_device rd;
     static mt19937 gen(rd());
 
-    // Generate random values
-    string sides[] = {"Сторона A", "Сторона B", "Сторона C", "Сторона D", "Сторона E"};
-    uniform_int_distribution<> side_dist(0, 4); // Choose from 0 to 4
-    side1 = sides[side_dist(gen)];
-    side2 = sides[side_dist(gen)];
+    // Generate random sides ensuring they are different
+    string sides[] = {"A", "B", "C", "D", "E"};
+    uniform_int_distribution<> side_dist(0, 4);
+    int side1_index = side_dist(gen);
+    int side2_index;
 
+    // Ensure side2 is different from side1
+    do {
+        side2_index = side_dist(gen);
+    } while (side2_index == side1_index);
+
+    side1 = sides[side1_index];
+    side2 = sides[side2_index];
 
     // Generate a random date within a year
-    uniform_int_distribution<> year_dist(2023, 2024);
+    uniform_int_distribution<> year_dist(2006, 2025); // диапазон годов
     uniform_int_distribution<> month_dist(1, 12);
-    uniform_int_distribution<> day_dist(1, 28); // Basic:  Avoiding out-of-range dates. can be improved.
+    int year = year_dist(gen);
+    int month = month_dist(gen);
 
-    signingDate = to_string(year_dist(gen)) + "-" +
-                  (month_dist(gen) < 10 ? "0" : "") + to_string(month_dist(gen)) + "-" +
-                  (day_dist(gen) < 10 ? "0" : "") + to_string(day_dist(gen));
+    int day_max = 31;
+    if (month == 2) {
+        day_max = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) ? 29 : 28;
+    } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+        day_max = 30;
+    }
+    std::uniform_int_distribution<> day_dist(1, day_max);
+    int day = day_dist(gen);
+    // Format the date string (Corrected to use iomanip for formatting)
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(4) << year << "-"
+       << std::setfill('0') << std::setw(2) << month << "-"
+       << std::setfill('0') << std::setw(2) << day;
+
+    signingDate = ss.str();
 
 
     // Generate random duration
-    uniform_int_distribution<> duration_dist(30, 1000);
+    std::uniform_int_distribution<> duration_dist(30, 1000);
     duration = duration_dist(gen);
 
     // Generate random reSigningDates (example: 0 to 3 dates)
-    int numReSignings = 1 + rand() % 3; //0 to 2 dates
+    std::uniform_int_distribution<> num_re_signings_dist(0, 3);
+    int numReSignings = num_re_signings_dist(gen); //0 to 3 dates
     reSigningDates.clear();
     for (int i = 0; i < numReSignings; ++i) {
         std::uniform_int_distribution<> day_offset_dist(1, 365);
         int dayOffset = day_offset_dist(gen);
 
         //Create a new date based on the signing date.
-        tm t{};
-        istringstream ss(signingDate);
-        ss >> get_time(&t, "%Y-%m-%d");
+        std::tm t{};
+        std::istringstream ss(signingDate);
+        ss >> std::get_time(&t, "%Y-%m-%d");
 
-        if(ss.fail()){
-             std::cerr << "Ошибка при генерации.\n";
-             continue; // Skip this re-signing date
+        if (ss.fail()) {
+            std::cerr << "Ошибка при генерации reSigningDate.\n";
+            continue; // Skip this re-signing date
         }
-        time_t signingTime = mktime(&t); // Convert to time_t
+        std::time_t signingTime = mktime(&t); // Convert to time_t
 
-        time_t reSigningTime = signingTime + (dayOffset * 24 * 60 * 60); //Offset.
-        tm* reSigningTm = std::localtime(&reSigningTime);
+        std::time_t reSigningTime = signingTime + (dayOffset * 24 * 60 * 60); //Offset.
+        std::tm* reSigningTm = std::localtime(&reSigningTime);
 
-        stringstream reSigningSs;
-        reSigningSs << put_time(reSigningTm, "%Y-%m-%d");
+        std::stringstream reSigningSs;
+        reSigningSs << std::put_time(reSigningTm, "%Y-%m-%d");
         reSigningDates.push_back(reSigningSs.str());
     }
 }
@@ -138,8 +159,7 @@ void Contract::displayContract() const {
     }
 }
 
-
-// Function to sort contracts by signing date
+// Функция сортировки контрактов по дате подписания 
 vector<Contract> sortContractsBySigningDate(const vector<Contract>& contracts) {
     vector<Contract> sortedContracts = contracts;
     sort(sortedContracts.begin(), sortedContracts.end(), [](const Contract& a, const Contract& b) {
@@ -148,13 +168,34 @@ vector<Contract> sortContractsBySigningDate(const vector<Contract>& contracts) {
     return sortedContracts;
 }
 
-// Implementation of the method to add a re-signing date
-void Contract::addReSigningDate(const string& date) {
-    reSigningDates.push_back(date);
+// Метод вычисления средней даты переподписания
+std::string Contract::calculateAverageReSigningDate() const {
+    if (reSigningDates.empty()) {
+        return "Нет дат переподписания";
+    }
+
+    time_t totalTime = 0;
+    for (const auto& dateStr : reSigningDates) {
+        std::tm t{};
+        std::istringstream ss(dateStr);
+        ss >> std::get_time(&t, "%Y-%m-%d");
+        if (ss.fail()) {
+            std::cerr << "Ошибка при парсинге даты: " << dateStr << std::endl;
+            return "Ошибка при вычислении средней даты";
+        }
+        totalTime += mktime(&t);
+    }
+
+    time_t averageTime = totalTime / reSigningDates.size();
+    std::tm* timeinfo = localtime(&averageTime);
+    char buffer[11];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d", timeinfo);
+    return std::string(buffer);
 }
 
-// Function to display sorted contracts
+// Функция отображения отсортированных дат переподписания
 void displaySortedContracts(const vector<Contract>& contracts) {
+
     if (contracts.empty()) {
         cout << "Нет контрактов для отображения.\n";
         return;
@@ -172,55 +213,45 @@ void displaySortedContracts(const vector<Contract>& contracts) {
 
 // перегруженные операции 
 
-// Сравнение по дате подписания
+//Оператор < для сравнения по средней дате
 bool Contract::operator<(const Contract& other) const {
-    return signingDate < other.signingDate;
+    std::tm tm1 = {};
+    std::istringstream ss1(signingDate);
+    ss1 >> std::get_time(&tm1, "%Y-%m-%d");
+
+    std::tm tm2 = {};
+    std::istringstream ss2(other.signingDate);
+    ss2 >> std::get_time(&tm2, "%Y-%m-%d");
+
+    std::time_t time1 = mktime(&tm1);
+    std::time_t time2 = mktime(&tm2);
+
+    return time1 < time2;
 }
 
-// Addition (combines reSigningDates)
+//Оператор + для объединения сторон и сложения сроков действия
 Contract Contract::operator+(const Contract& other) const {
-    Contract result(*this);  // Copy the current object
-    result.reSigningDates.insert(result.reSigningDates.end(), other.reSigningDates.begin(), other.reSigningDates.end());
-    return result;
-}
-//Substraction
-Contract Contract::operator-(const Contract& other) const {
-	Contract result(*this);
-	result.duration = this->duration - other.duration;
-    return result;
+    return Contract(this->side1 + " + " + other.side1,
+        this->side2 + " + " + other.side2,
+        this->signingDate,
+        this->duration + other.duration);
 }
 
-//Multiplication
-Contract Contract::operator*(const Contract& other) const {
-	Contract result(*this);
-	result.duration = this->duration * other.duration;
-    return result;
-}
-// Prefix increment (increase duration)
+//Префиксный инкремент
 Contract& Contract::operator++() {
     duration++;
     return *this;
 }
 
-// Postfix increment (increase duration)
+//Постфиксный инкремент
 Contract Contract::operator++(int) {
     Contract temp = *this;
-    duration++;
+    ++(*this);
     return temp;
 }
-// Prefix decrement (decrease duration)
-Contract& Contract::operator--() {
-    duration--;
-    return *this;
-}
 
-// Postfix decrement (decrease duration)
-Contract Contract::operator--(int) {
-    Contract temp = *this; // Создаем копию текущего объекта для возврата
-    duration--;             // Уменьшаем значение duration у текущего объекта
-    return temp;            // Возвращаем копию объекта, сделанную до уменьшения
-}
-// Assignment operator
+
+//Оператор присваивания
 Contract& Contract::operator=(const Contract& other) {
     if (this != &other) {
         side1 = other.side1;
@@ -230,15 +261,6 @@ Contract& Contract::operator=(const Contract& other) {
         reSigningDates = other.reSigningDates;
     }
     return *this;
-}
-
-
-string& Contract::operator[](int index){
-
-
-		if(index == 0) return side1;
-		if(index == 1) return side2;
-		return side1;
 }
 
 

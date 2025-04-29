@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <limits>
 #include <ctime>
 #include <sstream>
 #include <iomanip>
@@ -15,7 +14,7 @@
 // Определение глобального вектора 
 std::vector<Contract> allContracts;
 
-// // Function prototypes for input validation
+// Прототипы функций для проверки вводимых данных
 bool isValidString(const std::string& str) {
     return !str.empty() && std::any_of(str.begin(), str.end(), [](char c){ return !std::isspace(c); });
 }
@@ -58,58 +57,7 @@ bool isValidDate(const std::string& date) {
 }
 
 
-// // Реализации для ввода с проверкой
-
-
-// std::string enterString(const std::string& prompt) {
-//     std::string input;
-//     do {
-//         std::cout << prompt << ": ";
-//         std::getline(std::cin, input);
-//         if (isValidString(input)) {
-//             break;
-//         } else {
-//             std::cout << "Invalid input. Please enter a non-empty string.\n";
-//         }
-//     } while (true);
-//     return input;
-// }
-
-// int enterInteger(const std::string& prompt) {
-//     std::string input;
-//     int number;
-//     do {
-//         std::cout << prompt << ": ";
-//         std::getline(std::cin, input);
-//         if (isValidInteger(input)) {
-//             try {
-//                 number = std::stoi(input);
-//                 break;
-//             } catch (const std::out_of_range& oor) {
-//                 std::cout << "Number out of range. Please enter a smaller number.\n";
-//             }
-//         } else {
-//             std::cout << "Invalid input. Please enter an integer.\n";
-//         }
-//     } while (true);
-//     return number;
-// }
-
-// std::string enterDate(const std::string& prompt) {
-//     std::string input;
-//     do {
-//         std::cout << prompt << ": ";
-//         std::getline(std::cin, input);
-//         if (isValidDate(input)) {
-//             break;
-//         } else {
-//             std::cout << "Неправильный ввод даты. Пожалуйста введите дату в формате ГГГГ-ММ-ДД.\n";
-//         }
-//     } while (true);
-//     return input;
-// }
-
-// (Предполагается, что эти функции определены где-то еще)
+// реализация проверки вводимых данных
 std::string enterString(const std::string& prompt) {
     std::string input;
     std::cout << prompt;
@@ -142,7 +90,8 @@ void enterNumber(int& choice, const std::string& prompt) {
 
 
 
-// Реализации функций
+// Реализации функций, методов и т. д.
+
 void createDefaultContract(std::vector<Contract>& contracts) {
     int numContracts;
 
@@ -201,187 +150,52 @@ void displayAllContracts(const std::vector<Contract>& contracts) {
     }
 }
 
-void addDataToContractUser(std::vector<Contract>& allContracts) {
-    if (allContracts.empty()) {
-        std::cout << "Нет контрактов для добавления данных. Пожалуйста, сначала создайте контракты.\n";
+
+// Функция для вычисления средней даты переподписания для всех контрактов
+void calculateAverageReSigningDate(const std::vector<Contract>& contracts) {
+    if (contracts.empty()) {
+        std::cout << "Нет контрактов для вычисления средней даты переподписания.\n";
         return;
     }
 
-    // Выводим список контрактов с номерами
-    std::cout << "Выберите контракт для изменения:\n";
-    for (size_t i = 0; i < allContracts.size(); ++i) {
-        std::cout << i + 1 << ": " << allContracts[i].getside1() << " - " << allContracts[i].getside2() << "\n";
+    std::vector<std::string> allReSigningDates;
+    for (const auto& contract : contracts) {
+        std::vector<std::string> contractReSigningDates = contract.getReSigningDates();
+        allReSigningDates.insert(allReSigningDates.end(), contractReSigningDates.begin(), contractReSigningDates.end());
     }
 
-    // Запрашиваем номер контракта у пользователя
-    std::size_t choice;
-    std::cout << "Введите номер контракта: ";
-    std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-    // Проверяем корректность ввода
-    if (std::cin.fail() || choice < 1 || choice > allContracts.size()) {
-        std::cout << "Некорректный номер контракта.\n";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    if (allReSigningDates.empty()) {
+        std::cout << "Нет дат переподписания для вычисления средней даты.\n";
         return;
     }
 
-    // Получаем выбранный контракт (индекс на 1 меньше введенного номера)
-    Contract& selectedContract = allContracts[choice - 1];
+    time_t totalTime = 0;
+    int validDateCount = 0;
 
-    // Get the new re-signing date from the user
-    std::string newReSigningDate;
-    std::cout << "Введите новую дату переподписания (YYYY-MM-DD): ";
-    std::getline(std::cin, newReSigningDate);
+    for (const auto& dateStr : allReSigningDates) {
+        std::tm t{};
+        std::istringstream ss(dateStr);
+        ss >> std::get_time(&t, "%Y-%m-%d");
 
-    // Add the re-signing date to the selected contract
-    selectedContract.addReSigningDate(newReSigningDate);
+        if (!ss.fail()) {
+            totalTime += mktime(&t);
+            validDateCount++;
+        } else {
+            std::cerr << "Ошибка даты: " << dateStr << std::endl;
+        }
+    }
 
-    std::cout << "Дата переподписания добавлена.\n";
-    std::cout << "Новая дата переподписания: " << newReSigningDate << "\n";
+    if (validDateCount == 0) {
+        std::cout << "Нет корректных дат переподписания для вычисления средней даты.\n";
+        return;
+    }
+
+    time_t averageTime = totalTime / validDateCount;
+    std::tm* timeinfo = localtime(&averageTime);
+
+    char buffer[11];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d", timeinfo);
+    std::cout << "Средняя дата переподписания для всех контрактов: " << buffer << std::endl;
 }
-
-
-
-
-// std::string calculateAverageReSigningDate(const std::vector<Contract>& contracts);
-
-// void createAndDisplayContractFromString() {
-//     std::string contractData = "ООО Ромашка,ИП Иванов,2024-10-27,365"; //  Пример строки
-//     Contract contract(contractData); // Создание объекта Contract из строки
-
-//     std::cout << "--- Данные контракта из строки ---\n";
-//     std::cout << "Сторона 1: " << contract.getside1() << std::endl; //  Предполагается, что есть getSide1()
-//     std::cout << "Сторона 2: " << contract.getside2() << std::endl;
-//     std::cout << "Дата подписания: " << contract.getSigningDate() << std::endl;
-//     std::cout << "Продолжительность: " << contract.getDuration() << " дней" << std::endl;
-//     std::cout << "----------------------------------\n";
-// }
-
-
-void testContractFunctions(std::vector<Contract>& contracts) {
-    // Здесь должна быть реализация testContractFunctions,
-    // которая принимает std::vector<Contract>& contracts
-    std::cout << "testContractFunctions not implemented yet\n";
-}
-
-void testContractsMethod(std::vector<Contract>& contracts) {
-    // Здесь должна быть реализация testContractsMethod,
-    // которая принимает std::vector<Contract>& contracts
-    std::cout << "testContractsMethod not implemented yet\n";
-}
-
-
-
-
-// void testContractFunctions() {
-//      if (allContracts.size() < 2) {
-//         std::cout << "Need at least 2 contracts to test functions. Create some first.\n";
-//         return;
-//     }
-//      Contract contract1 = allContracts[0];
-//     Contract contract2 = allContracts[1];
-
-//     // Example using overloaded operators
-//     std::cout << "contract1 + contract2:\n" << (contract1 + contract2) << std::endl;
-
-//     std::cout << "contract1 - contract2 (Duration): " << (contract1 - contract2).getDuration() << std::endl;
-
-//      std::cout << "contract1 * contract2 (Duration): " << (contract1 * contract2).getDuration() << std::endl;
-
-//     // Example using []
-//     std::cout << "contract1[0] (Side 1): " << contract1[0] << std::endl;
-// }
-
-// void testContractsMethod() {
-//      if (allContracts.empty()) {
-//         std::cout << "No contracts to test a method on.\n";
-//         return;
-//     }
-//     //Demonstration of calling methods from Osipova_LR3-4_Contract class
-//         Contract contract = allContracts[0]; //get first contract
-//         contract.displayContract();
-// }
-
-
-// std::vector<Contract> sortContractsBySigningDate(const std::vector<Contract>& contracts);
-
-
-
-// inline void demonstrateOperators() {
-//     if (allContracts.size() < 2) {
-//         std::cout << "Need at least two contracts in 'allContracts' to demonstrate operators.  Use menu option to create them first.\n";
-//         return;
-//     }
-
-//     std::cout << "\nDemonstrating Operators:" << std::endl;
-//     Contract& c1 = allContracts[0];
-//     Contract& c2 = allContracts[1];
-
-//     // GET и SET методы
-//     std::cout << "\n--- GET и SET методы ---" << std::endl;
-//     std::cout << "side1 (c1): " << c1.getside1() << std::endl;
-//     c1.setside1("Updated side1 c1");
-//     std::cout << "Updated side1 (c1): " << c1.getside1() << std::endl;
-
-//     std::cout << "side2 (c1): " << c1.getside2() << std::endl;
-//     c1.setside2("Updated side2 c1");
-//     std::cout << "Updated side2 (c1): " << c1.getside2() << std::endl;
-
-//     std::cout << "Signing Date (c1): " << c1.getSigningDate() << std::endl;
-//     c1.setSigningDate("2024-07-01");
-//     std::cout << "Updated Signing Date (c1): " << c1.getSigningDate() << std::endl;
-
-//     std::cout << "Duration (c1): " << c1.getDuration() << std::endl;
-//     c1.setDuration(730);
-//     std::cout << "Updated Duration (c1): " << c1.getDuration() << std::endl;
-
-//     std::cout << "Re-signing Dates (c1):";
-//     for (const auto& date : c1.getReSigningDates()) {
-//         std::cout << " " << date;
-//     }
-//     std::cout << std::endl;
-//     c1.addReSigningDate("2025-01-01");
-//     std::cout << "Updated Re-signing Dates (c1):";
-//     for (const auto& date : c1.getReSigningDates()) {
-//         std::cout << " " << date;
-//     }
-//     std::cout << std::endl;
-
-
-
-//     // Оператор сравнения <
-//     std::cout << "\n--- Оператор сравнения < ---" << std::endl;
-
-//     if (c1 < c2) {
-//         std::cout << "c1 is earlier than c2" << std::endl;
-//     } else {
-//         std::cout << "c1 is not earlier than c2" << std::endl;
-//     }
-
-//     // Оператор сложения +
-//     std::cout << "\n--- Оператор сложения + ---" << std::endl;
-//     Contract c3 = c1 + c2;
-//     std::cout << "c1:\n" << c1 << std::endl;
-//     std::cout << "c2:\n" << c2 << std::endl;
-//     std::cout << "c1 + c2:\n" << c3 << std::endl;
-
-//     // Оператор префиксного инкремента ++
-//     std::cout << "\n--- Оператор префиксного инкремента ++ ---" << std::endl;
-//     std::cout << "Duration before ++c1: " << c1.getDuration() << std::endl;
-//     ++c1;
-//     std::cout << "Duration after ++c1: " << c1.getDuration() << std::endl;
-
-//     // Оператор постфиксного инкремента ++
-//     std::cout << "\n--- Оператор постфиксного инкремента ++ ---" << std::endl;
-//     std::cout << "Duration before c2++: " << c2.getDuration() << std::endl;
-//     Contract c4 = c2++;
-//     std::cout << "Duration after c2++: " << c2.getDuration() << std::endl;
-//     std::cout << "Duration of c4 (result of c2++): " << c4.getDuration() << std::endl;
-
-
-// }
-
 
 #endif
