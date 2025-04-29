@@ -86,6 +86,14 @@ void enterNumber(int& choice, const std::string& prompt) {
     std::cout << prompt << ": ";
     std::cin >> choice;
     std::cin.ignore(); // Clear the input buffer
+    if (std::cin.fail()) {
+        std::cerr << "Ошибка ввода!  Пожалуйста, введите число.\n";
+        std::cin.clear(); // Сбрасываем флаги ошибок
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Очищаем буфер
+        choice = -1; // или какое-то другое значение по умолчанию или флаг ошибки
+        return; // Выходим из функции
+    }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
 }
 
 
@@ -113,7 +121,6 @@ void createDefaultContract(std::vector<Contract>& contracts) {
     }
 
 }
-
 void createParameterizedContract(std::vector<Contract>& contracts) {
     std::string side1 = enterString("Введите сторону 1 (Нужно написать только название на англ.): ");
     std::string side2 = enterString("Введите сторону 2 (Нужно написать только название на англ.): ");
@@ -130,7 +137,7 @@ void createParameterizedContract(std::vector<Contract>& contracts) {
 
     for (int i = 0; i < numReSigningDates; ++i) {
         std::string reSigningDate = enterDate("Введите дату переподписания №" + std::to_string(i + 1) + ": ");
-        newContract.addReSigningDate(reSigningDate);
+        newContract.addReSigningDate(reSigningDate); // Теперь используем addReSigningDate
     }
 
     contracts.push_back(newContract);

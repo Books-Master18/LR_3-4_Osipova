@@ -210,6 +210,12 @@ void displaySortedContracts(const vector<Contract>& contracts) {
     }
 }
 
+void Contract::addReSigningDate(const std::string& date) {
+    reSigningDates.push_back(date);
+}
+void Contract::setaddReSigningDates(const std::vector<std::string>& newDates) {
+     reSigningDates = newDates;
+}
 
 // перегруженные операции 
 
@@ -262,6 +268,9 @@ Contract& Contract::operator=(const Contract& other) {
     }
     return *this;
 }
+
+
+
 
 
 ostream& operator<<(ostream& os, const Contract& contract) {

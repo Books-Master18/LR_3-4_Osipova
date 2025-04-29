@@ -27,8 +27,9 @@ public:
     void setside2(const std::string& s2) { side2 = s2; }
     void setSigningDate(const std::string& date) { signingDate = date; }
     void setDuration(int dur) { duration = dur; }
-    void setReSigningDates(const std::vector<std::string>& newDates); // Установка дат переподписания
-    
+    void setaddReSigningDates(const std::vector<std::string>& newDates); // Установка дат переподписания
+    void addReSigningDate(const std::string& date); // Добавление одной даты
+
 
 
     // Конструкторы
@@ -39,8 +40,8 @@ public:
 
     // Метод вывода информации
     void displayContract() const;
-    
-    void addReSigningDate(const std::string& date);
+
+
     
     // Метод вычисления средней даты переподписания
     std::string calculateAverageReSigningDate() const;
