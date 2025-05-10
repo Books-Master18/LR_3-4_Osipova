@@ -1,40 +1,43 @@
-#include <iostream>
-#include <string>
-#include <map>
-#include <vector>
-#include <algorithm>
 #include <ctime>
-#include <functional>
+#include <map>
 #include "Osipova_LR3-4_Methods.h"
 #include "Osipova_LR3-4_Contract.cpp"
 
+
 using namespace std;
+
 
 struct MenuItem {
     string title;
-    function<void(std::vector<Contract>&)> action;
+    function<void(vector<Contract>&)> action;
 
     MenuItem(string title, function<void(vector<Contract>&)> action) : title(title), action(action) {}
-    MenuItem() : title(""), action(nullptr) {} // If you need a default constructor
+    MenuItem() : title(""), action(nullptr) {} 
 };
 
 
 int main() {
     setlocale(LC_ALL, "ru");
     srand(time(NULL));
-
-    map<int, MenuItem> menu = {
-        {1, {"Создать Contract по умолчанию", createDefaultContract}},
-        {2, {"Создать параметрический Contract", createParameterizedContract}},
-        {3, {"Отобразить все данные из Contracts", displayAllContracts}},
-        {4, {"Отсортировать Contract по дате первого подписания", displaySortedContracts}},
-        {5, {"Вычислить среднее даты переподписания", calculateAverageReSigningDate}},
-    };
     
 
-    std::vector<Contract> contracts; //Вектор для хранения контрактов Contracts
+    map<int, MenuItem> menu = {
+        {1,{"СоздатьContract по умолчанию",createDefaultContract}},
+        {2, {"Создать параметрический Contract", createParameterizedContract}},
+        {3,{"Конструктор копирования последнего добавленного контракта", createContractcopy}},
+        {4,{"Преобразование", replaceContract}},
+        {5,{"Создание Contract с консоли",createContractconsol}},
+        {6,{"Отобразить все данные из Contracts", displayAllContracts}},
+        {7,{"Сортировка контрактов по первой дате подписания", displaySortedContracts}},
+        {8,{"Среднее значение контракта (проверка корректности через Excel)", displayAverageReSigningDates}},
+        {9,{"Тест перегруженных операций", compareAverageReSigningDates}},
+        {10,{"Перегруженный оператор сложения", sumContracts}},
+        {11,{"Постфиксное и префиксное инкремент", addContract}}, 
+        {12,{"Присваивание", assignmentConstructor}},
+    };
 
-    int choice = 0;
+
+    unsigned choice = 0;
     cout <<"=============== Меню ==============="<<endl;
     cout <<""<<endl;
         for (const auto& item : menu) 
@@ -43,7 +46,8 @@ int main() {
         }
     cout <<"0. Выход"<< endl;
     while (true){
-        enterNumber(choice, "Введите выбор пункта");
+        //enterChoice(choice, "Введите выбор пункта");
+        choice = enterChoice("Введите выбор пункта");
         if (choice == 0)
         {
             std::cout <<"2025 Osipova Aleksandra" << endl;
@@ -62,6 +66,6 @@ int main() {
             cout << "Неопознаный выбор. Попробуйте снова.\n";
         }
 
-    } while (choice != 0);
+    }
     return 0;
 }
