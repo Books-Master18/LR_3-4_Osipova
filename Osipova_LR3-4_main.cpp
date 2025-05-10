@@ -24,7 +24,7 @@ int main() {
     map<int, MenuItem> menu = {
         {1,{"СоздатьContract по умолчанию",createDefaultContract}},
         {2, {"Создать параметрический Contract", createParameterizedContract}},
-        {3,{"Конструктор копирования последнего добавленного контракта", createContractcopy}},
+        {3,{"Конструктор копирования контракта", createContractcopy}},
         {4,{"Преобразование", replaceContract}},
         {5,{"Создание Contract с консоли",createContractconsol}},
         {6,{"Отобразить все данные из Contracts", displayAllContracts}},
