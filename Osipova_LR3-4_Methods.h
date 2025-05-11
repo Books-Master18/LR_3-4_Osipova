@@ -221,14 +221,14 @@ void createParameterizedContract(vector<Contract>& contracts) {
 
 
 
-void createContractcopy(std::vector<Contract>& contracts) {
+void createContractcopy(vector<Contract>& contracts) {
     if (contracts.empty()) {
-        std::cout << "Нет контрактов для копирования (вектор пуст).\n";
+        cout << "Нет контрактов для копирования (вектор пуст).\n";
         return;
     }
 
     // Выводим список контрактов с номерами
-    std::cout << "\nСписок контрактов:\n";
+    cout << "\nСписок контрактов:\n";
     for (size_t i = 0; i < contracts.size(); ++i) {
         cout << "Контракт №" << (i + 1) << "\n";
         cout << contracts[i]<< endl;
@@ -243,21 +243,21 @@ void createContractcopy(std::vector<Contract>& contracts) {
             // Получаем контракт для копирования
             Contract contr2 = contracts[contractNumber - 1]; // Получаем копию выбранного элемента
 
-            std::cout << "Выбранный контракт для копирования:" << std::endl << contr2 << std::endl;
+            cout << "Выбранный контракт для копирования:" << endl << contr2 << endl;
 
             // Создаем копию контракта с использованием конструктора копирования
             Contract contr3 = contr2;
-            std::cout << "Контракт №" << contracts.size() + 1 << " (копия):" << std::endl << contr3 << std::endl;
+            cout << "Контракт №" << contracts.size() + 1 << " (копия):" << endl << contr3 << endl;
 
             // Добавляем скопированный контракт в вектор
             contracts.push_back(contr3);
         } else {
-            std::cout << "Ошибка: Введен некорректный номер контракта.\n";
+            cout << "Ошибка: Введен некорректный номер контракта.\n";
         }
-    } catch (const std::exception& e) {
-        std::cerr << "Произошла ошибка: " << e.what() << std::endl;
+    } catch (const exception& e) {
+        cerr << "Произошла ошибка: " << e.what() << endl;
     } catch (...) {
-        std::cerr << "Произошла неизвестная ошибка.\n";
+        cerr << "Произошла неизвестная ошибка.\n";
     }
 }
 
@@ -266,36 +266,37 @@ void createContractconsol(vector<Contract>& contracts){
     Contract newContract;
     cin>>newContract;
     contracts.push_back(newContract);
-    cout<<"введеннный контракт: "<<newContract<<endl;
+    cout<<"введеннный контракт: "<< endl;
+    cout << newContract<<endl;
 }
 
 
 // Функция для вычисления средней даты переподписания для одного контракта
 string Contract::calculateAverageReSigningDate() const { // Добавляем const
-    const std::vector<std::string>& reSigningDates = this->getReSigningDates(); // Используем this->
+    const vector<string>& reSigningDates = this->getReSigningDates(); // Используем this->
 
     if (reSigningDates.empty()) {
         return "Нет дат переподписания для вычисления средней даты.";
     }
 
-    std::time_t totalTime = 0;
+    time_t totalTime = 0;
     int validDateCount = 0;
 
     for (const auto& dateStr : reSigningDates) {
-        std::tm t{};
-        std::istringstream ss(dateStr);
-        ss >> std::get_time(&t, "%Y-%m-%d");
+        tm t{};
+        istringstream ss(dateStr);
+        ss >> get_time(&t, "%Y-%m-%d");
 
         if (!ss.fail()) {
-            std::time_t tt = mktime(&t);
+            time_t tt = mktime(&t);
             if(tt != -1) {
                 totalTime += tt;
                 validDateCount++;
             } else {
-                std::cerr << "Ошибка при преобразовании в time_t: " << dateStr << std::endl;
+                cerr << "Ошибка при преобразовании в time_t: " << dateStr << endl;
             }
         } else {
-            std::cerr << "Ошибка при извлечении даты: " << dateStr << std::endl;
+            cerr << "Ошибка при извлечении даты: " << dateStr << endl;
         }
     }
 
@@ -303,48 +304,48 @@ string Contract::calculateAverageReSigningDate() const { // Добавляем c
         return "Нет корректных дат переподписания для вычисления средней даты.";
     }
 
-    std::time_t averageTime = totalTime / validDateCount;
-    std::tm* timeinfo = localtime(&averageTime);
+    time_t averageTime = totalTime / validDateCount;
+    tm* timeinfo = localtime(&averageTime);
     if(timeinfo == nullptr) {
-        std::cerr << "Ошибка при преобразовании в tm*" << std::endl;
+        cerr << "Ошибка при преобразовании в tm*" << endl;
         return "Ошибка вычисления средней даты";
     }
 
     char buffer[11];
     strftime(buffer, sizeof(buffer), "%Y-%m-%d", timeinfo);
-    return std::string(buffer); // Возвращаем среднюю дату в виде строки
+    return string(buffer); // Возвращаем среднюю дату в виде строки
 }
 
 
 // Функция для отображения средних дат переподписания для всех контрактов
-void displayAverageReSigningDates(const std::vector<Contract>& contracts) {
+void displayAverageReSigningDates(const vector<Contract>& contracts) {
     if (contracts.empty()) {
-        std::cout << "Нет контрактов для отображения средних дат переподписания.\n";
+        cout << "Нет контрактов для отображения средних дат переподписания.\n";
         return;
     }
 
-    std::cout << "--- Средние даты переподписания для всех контрактов ---\n";
+    cout << "--- Средние даты переподписания для всех контрактов ---\n";
     for (size_t i = 0; i < contracts.size(); ++i) {
         const Contract& contract = contracts[i];
         // Вызываем метод calculateAverageReSigningDate() для объекта contract без аргументов
-        std::string averageDate = contract.calculateAverageReSigningDate();
-        std::cout << "Контракт №" << (i + 1) << ": " << averageDate << std::endl;
+        string averageDate = contract.calculateAverageReSigningDate();
+        cout << "Контракт №" << (i + 1) << ": " << averageDate << endl;
     }
 }
 
 
 
-void replaceContract(std::vector<Contract>& contracts) {
+void replaceContract(vector<Contract>& contracts) {
     if (contracts.empty()) {
-        std::cout << "Нет контрактов для замены (вектор пуст).\n";
+        cout << "Нет контрактов для замены (вектор пуст).\n";
         return;
     }
 
     // Выводим список контрактов с номерами
-    std::cout << "\nСписок контрактов:\n";
+    cout << "\nСписок контрактов:\n";
     for (size_t i = 0; i < contracts.size(); ++i) {
             cout << "Контракт №" << (i + 1) << "\n";
-            cout << contracts[i] << std::endl;
+            cout << contracts[i] << endl;
     }
 
     // Спрашиваем пользователя, какой контракт нужно заменить
@@ -353,16 +354,16 @@ void replaceContract(std::vector<Contract>& contracts) {
     try {
         // Проверяем, что введенный номер контракта корректен
         if (contractNumber <= contracts.size() && contractNumber > 0) {
-            std::cout << "Введите данные для замены контракта №" << contractNumber << ":" << std::endl;
-            std::cin >> contracts[contractNumber - 1]; // Используем перегруженный оператор >> для ввода данных
-            std::cout << "Контракт №" << contractNumber << " успешно заменен.\n";
+            cout << "Введите данные для замены контракта №" << contractNumber << ":" << endl;
+            cin >> contracts[contractNumber - 1]; 
+            cout << "Контракт №" << contractNumber << " успешно заменен.\n";
         } else {
-            std::cout << "Ошибка: Введен некорректный номер контракта.\n";
+            cout << "Ошибка: Введен некорректный номер контракта.\n";
         }
-    } catch (const std::exception& e) {
-        std::cerr << "Произошла ошибка: " << e.what() << std::endl;
+    } catch (const exception& e) {
+        cerr << "Произошла ошибка: " << e.what() << endl;
     } catch (...) {
-        std::cerr << "Произошла неизвестная ошибка.\n";
+        cerr << "Произошла неизвестная ошибка.\n";
     }
 }
 void addContract(vector<Contract>& contracts) {
@@ -371,7 +372,7 @@ void addContract(vector<Contract>& contracts) {
         cout << "\n The list of contracts\n";
         for (size_t i = 0; i < contracts.size(); ++i) {
             cout << "Контракт №" << (i + 1) << "\n";
-            cout << contracts[i] << std::endl;
+            cout << contracts[i] << endl;
         }
 
         // ввод номера контракта для вычислений
@@ -412,7 +413,7 @@ void sumContracts(vector<Contract>& contracts) {
         cout << "\n Список контрактов\n";
         for (size_t i = 0; i < contracts.size(); ++i) {
             cout << "Контракт №" << (i + 1) << "\n";
-            cout << contracts[i] << std::endl;
+            cout << contracts[i] << endl;
         }
 
         // ввод номера контракта для вычислений
@@ -420,35 +421,35 @@ void sumContracts(vector<Contract>& contracts) {
         unsigned num2 = enterChoice("Введите номер второго контракта");
 
         try {
-            if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) { // Adjusted condition
-                Contract sumContract = contracts[num1 - 1] + contracts[num2 - 1]; // Subtract 1 for correct index
+            if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) { 
+                Contract sumContract = contracts[num1 - 1] + contracts[num2 - 1]; 
                 cout << "сумма контрактов: " << sumContract << endl;
                 cout << endl;
                 contracts.push_back(sumContract);
             } else {
-                std::cout << "Ошибка: Введены некорректные номера контрактов." << std::endl;
+                cout << "Ошибка: Введены некорректные номера контрактов." << endl;
             }
-        } catch (const std::out_of_range& oor) {
-            std::cerr << "Ошибка: выход за границы диапазона: " << oor.what() << std::endl;
+        } catch (const out_of_range& oor) {
+            cerr << "Ошибка: выход за границы диапазона: " << oor.what() << endl;
         } catch (...) {
-            std::cerr << "Ошибка, попробуйте ввести другой номер контракта" << std::endl;
+            cerr << "Ошибка, попробуйте ввести другой номер контракта" << endl;
         }
     } else {
-        std::cout << "Нет контрактов для суммирования (вектор пуст).\n";
+        cout << "Нет контрактов для суммирования (вектор пуст).\n";
     }
 }
 
 
 
 void assignmentConstructor(vector<Contract>& contracts) {
-    std::cout << "тест присваивания одного контракта другому" << std::endl;
+    cout << "тест присваивания одного контракта другому" << endl;
 
     if (contracts.size() > 0) {
         // вывод списка контрактов
-        std::cout << "\n Список контрактов\n";
+        cout << "\n Список контрактов\n";
         for (size_t i = 0; i < contracts.size(); ++i) {
             cout << "Контракт №" << (i + 1) << "\n";
-            cout << contracts[i] << std::endl;
+            cout << contracts[i] << endl;
         }
 
         // ввод номера контракта для вычислений
@@ -458,16 +459,16 @@ void assignmentConstructor(vector<Contract>& contracts) {
         try {
             if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) { // Adjusted condition
                 Contract contr = contracts[num2 - 1] = contracts[num1 - 1]; // Subtract 1 for correct index
-                std::cout << "тест присваивания: " << contr << std::endl;
+                cout << "тест присваивания: " << contr << endl;
                 cout << endl;
             } else {
-                std::cout << "Ошибка: Введены некорректные номера контрактов." << std::endl;
+                cout << "Ошибка: Введены некорректные номера контрактов." << endl;
             }
         } catch (...) {
-            std::cerr << "Ошибка, попробуйте ввести другой номер контракта" << std::endl;
+            cerr << "Ошибка, попробуйте ввести другой номер контракта" << endl;
         }
     } else {
-        std::cout << "Нет контрактов для присваивания (вектор пуст).\n";
+        cout << "Нет контрактов для присваивания (вектор пуст).\n";
     }
 }
 
@@ -475,7 +476,7 @@ void assignmentConstructor(vector<Contract>& contracts) {
 
 
 vector<Contract> sortContractsBySigningDate(vector<Contract> contracts) {
-    std::sort(contracts.begin(), contracts.end(), [](const Contract& a, const Contract& b) {
+    sort(contracts.begin(), contracts.end(), [](const Contract& a, const Contract& b) {
         return a.getSigningDate() < b.getSigningDate();
     });
     return contracts;
@@ -493,23 +494,23 @@ void displaySortedContracts(const vector<Contract>& contracts) {
     cout << "--- Отсортированные контракты (по дате подписания) ---\n";
     for (size_t i = 0; i < sortedContracts.size(); ++i) {
         const Contract& contract = sortedContracts[i];
-        std::cout << "Контракт №" << (i + 1) << "\n" << contract << std::endl;
+        cout << "Контракт №" << (i + 1) << "\n" << contract << endl;
     }
 }
 
 
 
-void compareAverageReSigningDates(std::vector<Contract>& contracts) {
+void compareAverageReSigningDates(vector<Contract>& contracts) {
     if (contracts.empty()) {
         cout << "Нет контрактов для сравнения.\n";
         return;
     }
 
     // Вывод списка контрактов
-    std::cout << "\nСписок контрактов:\n";
+    cout << "\nСписок контрактов:\n";
     for (size_t i = 0; i < contracts.size(); ++i) {
             cout << "Контракт №" << (i + 1) << "\n";
-            cout << contracts[i] << std::endl;
+            cout << contracts[i] << endl;
     }
 
     // Ввод номеров контрактов для сравнения
