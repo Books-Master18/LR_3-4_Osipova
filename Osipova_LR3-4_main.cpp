@@ -25,7 +25,7 @@ int main() {
         {1,{"СоздатьContract по умолчанию",createDefaultContract}},
         {2, {"Создать параметрический Contract", createParameterizedContract}},
         {3,{"Конструктор копирования контракта", createContractcopy}},
-        {4,{"Преобразование", replaceContract}},
+        // {4,{"Преобразование", replaceContract}},
         {5,{"Создание Contract с консоли",createContractconsol}},
         {6,{"Отобразить все данные из Contracts", displayAllContracts}},
         {7,{"Сортировка контрактов по первой дате подписания", displaySortedContracts}},

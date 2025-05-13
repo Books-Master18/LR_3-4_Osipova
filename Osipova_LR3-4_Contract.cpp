@@ -11,17 +11,17 @@ using namespace std;
 
 //для генерации рандомных имен сторон из 1 заглавной буквы
 
-string generate_random_name() {
-    string name;
-    random_device rd;
-    mt19937 generator(rd()); //генератор псевдослучайных рандомных чисел
-    uniform_int_distribution<> dist('A', 'Z'); //диапазон значений
+// string generate_random_name() {
+//     string name;
+//     random_device rd;
+//     mt19937 generator(rd()); //генератор псевдослучайных рандомных чисел
+//     uniform_int_distribution<> dist('A', 'Z'); //диапазон значений
 
-    for (int i = 0; i < 1; ++i) {
-        name += static_cast<char>(dist(generator));
-    }
-    return name;
-}
+//     for (int i = 0; i < 1; ++i) {
+//         name += static_cast<char>(dist(generator));
+//     }
+//     return name;
+// }
 
 string Contract::generate_random_date_first() {
     random_device rd;
@@ -60,11 +60,12 @@ Contract::Contract() :
     signingDate(generate_random_date_first()),    // Случайная дата подписания
     duration(rand() % 365 + 30)  // Случайный срок действия от 30 до 394 дней
     {
-        reSigningDates.resize(rand() % 3 + 2); //  Добавлено +1 для генерации минимум 1 даты
+        reSigningDates.resize(rand() % 3 + 2);
         generate(reSigningDates.begin(), reSigningDates.end(), [&]() { return generate_random_date_first(); });
     }
 
-
+//   Contract(const string& s1, const string& s2, const string& signingDate, int dur, const vector<string>& reSigning):
+//   side1(s1), side2(s2), signingDate(signingDate), duration(dur) {}  
 
 // Конструктор копирования+
 Contract::Contract(const Contract& other) :

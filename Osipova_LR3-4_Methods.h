@@ -44,13 +44,7 @@ bool Contract::operator!=(const Contract& other) const {
 
 
 bool isValidSingleAlphaString(const string& str) {
-    // Проверяем, что строка состоит из одного символа
-    if (str.length() != 1) {
-        return false;
-    }
-
-    // Проверяем, что символ - английская буква
-    return isalpha(static_cast<unsigned char>(str[0])) && (str[0] >= 'A' && str[0] <= 'Z');
+    return str.length() == 1 && str[0] >= 'A' && str[0] <= 'Z';
 }
 
 bool isValidDate(const string& date) {
@@ -77,20 +71,6 @@ bool isValidDate(const string& date) {
     return true;
 }
 
-// Новая функция для проверки, является ли строка целым числом
-bool isInteger(const std::string& s) {
-    if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false;
-
-    char* p;
-    strtol(s.c_str(), &p, 10);
-
-    return (*p == 0);
-}
-
-// Новая функция для проверки, является ли строка положительным целым числом
-bool isPositiveInteger(const string& s) {
-    return isInteger(s) && (stoll(s) >= 0);
-}
 
 bool user_input(string input) {
     if (input.empty()) return false;
@@ -261,7 +241,7 @@ void createContractcopy(vector<Contract>& contracts) {
     }
 }
 
-// создает кампанию при воде пользователем с клавиатуры каждого поля
+// создает контракт при воде пользователем с клавиатуры каждого поля
 void createContractconsol(vector<Contract>& contracts){
     Contract newContract;
     cin>>newContract;
@@ -335,37 +315,6 @@ void displayAverageReSigningDates(const vector<Contract>& contracts) {
 
 
 
-void replaceContract(vector<Contract>& contracts) {
-    if (contracts.empty()) {
-        cout << "Нет контрактов для замены (вектор пуст).\n";
-        return;
-    }
-
-    // Выводим список контрактов с номерами
-    cout << "\nСписок контрактов:\n";
-    for (size_t i = 0; i < contracts.size(); ++i) {
-            cout << "Контракт №" << (i + 1) << "\n";
-            cout << contracts[i] << endl;
-    }
-
-    // Спрашиваем пользователя, какой контракт нужно заменить
-    unsigned contractNumber = enterChoice("Введите номер контракта для замены: ");
-
-    try {
-        // Проверяем, что введенный номер контракта корректен
-        if (contractNumber <= contracts.size() && contractNumber > 0) {
-            cout << "Введите данные для замены контракта №" << contractNumber << ":" << endl;
-            cin >> contracts[contractNumber - 1]; 
-            cout << "Контракт №" << contractNumber << " успешно заменен.\n";
-        } else {
-            cout << "Ошибка: Введен некорректный номер контракта.\n";
-        }
-    } catch (const exception& e) {
-        cerr << "Произошла ошибка: " << e.what() << endl;
-    } catch (...) {
-        cerr << "Произошла неизвестная ошибка.\n";
-    }
-}
 void addContract(vector<Contract>& contracts) {
     if (contracts.size() > 0) {
         // вывод списка контрактов
@@ -383,6 +332,7 @@ void addContract(vector<Contract>& contracts) {
                 cout << "постфиксный инкремент до" << endl;
                 cout  << endl;
                 Contract oldContract = contracts[number - 1]++; //  Код для post increment
+                
                 cout << oldContract << endl;
                 cout  << endl;
                 cout << "после: " << contracts[number - 1] << endl;
