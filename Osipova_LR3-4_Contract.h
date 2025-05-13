@@ -21,9 +21,6 @@ public:
     // конструктор по умолчанию
     Contract();
 
-    // Конструктор преобразования 
-    Contract(const string& contractString);
-
     // Констроктор, заданный параметрически
     Contract(const string& s1, const string& s2, const string& signingDate, int dur, const vector<string>& reSigning):
   side1(s1), side2(s2), signingDate(signingDate), duration(dur) {}  
@@ -32,10 +29,11 @@ public:
     // Конструктор копирования
     Contract(const Contract& other); 
 
-    //конструктор делегирования вызывает параметризированный
-    Contract(const string& s1, const string& s2, const string& signingDate, int dur) :
-    Contract( s1, s2, signingDate, dur, {}) {}
-   
+    //Конструктор преобразования
+    // Contract(const string& s1) : Contract() {
+    //   side1 = s1;
+    // }
+
     // деструктор
     ~Contract()=default;
 
@@ -58,21 +56,18 @@ public:
     // Объявление функций
 
      // Объявление displayAllContracts
-    void displayAllContracts(const vector<Contract>& contracts);
-    void createDefaultContract(vector<Contract>& contracts);
-    void createParameterizedContract(vector<Contract>& contracts);
-    //???
-    // void addReSigningDate(const string& date); 
+    // void displayAllContracts(const vector<Contract>& contracts);
+    // void createDefaultContract(vector<Contract>& contracts);
+    // void createParameterizedContract(vector<Contract>& contracts);
     
     // Метод вычисления средней даты переподписания у одного контракта
     string calculateAverageReSigningDate() const; 
-    void displayAverageReSigningDates(const vector<Contract>& contracts);
-    vector<Contract> sortContractsBySigningDate(vector<Contract> contracts);
-    void displaySortedContracts(const vector<Contract>& contracts);
+    // void displayAverageReSigningDates(const vector<Contract>& contracts);
+    // vector<Contract> sortContractsBySigningDate(vector<Contract> contracts);
+    // void displaySortedContracts(const vector<Contract>& contracts);
     // генерация случаных значений
-    string generate_random_string(int length); // Функция для генерации случайных строк
-    string generate_random_date_first(); // Функция для генерации случайной даты
-    // int generate_random_numcontract(int length);
+    // string generate_random_string(int length); // Функция для генерации случайных строк
+    // string generate_random_date_first(); // Функция для генерации случайной даты
 
 
     // перегруженные операции 

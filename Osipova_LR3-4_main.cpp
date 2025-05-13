@@ -22,10 +22,10 @@ int main() {
     
 
     map<int, MenuItem> menu = {
-        {1,{"СоздатьContract по умолчанию",createDefaultContract}},
+        {1,{"Создать Contract по умолчанию",createDefaultContract}},
         {2, {"Создать параметрический Contract", createParameterizedContract}},
         {3,{"Конструктор копирования контракта", createContractcopy}},
-        // {4,{"Преобразование", replaceContract}},
+        {4,{"Преобразование", replaceContract}},
         {5,{"Создание Contract с консоли",createContractconsol}},
         {6,{"Отобразить все данные из Contracts", displayAllContracts}},
         {7,{"Сортировка контрактов по первой дате подписания", displaySortedContracts}},
@@ -37,7 +37,7 @@ int main() {
     };
 
 
-    unsigned choice = 0;
+    int choice = 0;
     cout <<"=============== Меню ==============="<<endl;
     cout <<""<<endl;
         for (const auto& item : menu) 
@@ -47,7 +47,7 @@ int main() {
     cout <<"0. Выход"<< endl;
     while (true){
         //enterChoice(choice, "Введите выбор пункта");
-        choice = enterChoice("Введите выбор пункта");
+        enterNumber(choice, "Введите выбор пункт");
         if (choice == 0)
         {
             std::cout <<"2025 Osipova Aleksandra" << endl;

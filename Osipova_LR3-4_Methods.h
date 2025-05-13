@@ -75,8 +75,10 @@ bool isValidDate(const string& date) {
 bool user_input(string input) {
     if (input.empty()) return false;
     try {
-        // Теперь stold используется только для проверки, что это ЧИСЛО, а не буква
-        stold(input);
+         int num = stold(input); // Используем stod для вещественных чисел
+        if (num < 0) {
+            return false; // Проверка на отрицательное число
+        }
     }
     catch (...)
     {
@@ -85,30 +87,6 @@ bool user_input(string input) {
     return true;
 }
 
-
-unsigned enterChoice(const string& label) {
-    unsigned choice;
-    string raw_input;
-    cout << label << " = ";
-    getline(cin, raw_input);
-
-    while (true) {
-        try {
-            choice = stoul(raw_input);
-            if (choice >= 0) {
-                return choice;
-            }
-            else {
-                cout << "Пожалуйста, введите неотрицательное целое число: ";
-                getline(cin, raw_input);
-            }
-        }
-        catch (...) {
-            cout << "Некорректный ввод. Пожалуйста, введите целое число: ";
-            getline(cin, raw_input);
-        }
-    }
-}
 
 
 void enterNumber(int& varLink, const string& label) {
@@ -184,7 +162,7 @@ void createParameterizedContract(vector<Contract>& contracts) {
 }
 
 // Функция для отображения всех данных из Contracts
-  void displayAllContracts(const vector<Contract>& contracts) {
+void displayAllContracts(const vector<Contract>& contracts) {
     if (contracts.empty()) {
         cout << "Нет контрактов для отображения.\n";
         return;
@@ -215,7 +193,8 @@ void createContractcopy(vector<Contract>& contracts) {
     }
 
     // Спрашиваем пользователя, какой контракт нужно копировать
-    unsigned contractNumber = enterChoice("Введите номер контракта для копирования: ");
+    int contractNumber;
+    enterNumber(contractNumber, "Введите контракт, который хотите копировать");
 
     try {
         // Проверяем, что введенный номер контракта корректен
@@ -318,33 +297,46 @@ void displayAverageReSigningDates(const vector<Contract>& contracts) {
 void addContract(vector<Contract>& contracts) {
     if (contracts.size() > 0) {
         // вывод списка контрактов
-        cout << "\n The list of contracts\n";
+        cout << "\n Список контрактов\n";
         for (size_t i = 0; i < contracts.size(); ++i) {
             cout << "Контракт №" << (i + 1) << "\n";
             cout << contracts[i] << endl;
         }
 
         // ввод номера контракта для вычислений
-        unsigned number = enterChoice("Введите номер кампании для расчета приращений: ");
+        int contractNumber;
+        enterNumber(contractNumber, "Введите контракт, который хотите копировать");
 
         try {
-            if (number <= contracts.size() && number > 0) {
-                cout << "постфиксный инкремент до" << endl;
-                cout  << endl;
-                Contract oldContract = contracts[number - 1]++; //  Код для post increment
-                
-                cout << oldContract << endl;
-                cout  << endl;
-                cout << "после: " << contracts[number - 1] << endl;
-                cout  << endl;
-                cout << "префиксный инкремент: " << ++contracts[number - 1] << endl; // Код для pre increment
+            if (contractNumber <= contracts.size() && contractNumber > 0) {
                 cout << endl;
+                
+                cout << "постфиксный инкремент до" << endl;
+                cout << endl;
+                cout << contracts[contractNumber - 1]<< endl;
+
+                cout << endl << "Постфиксный инкремент в процессе:" << endl;
+                Contract oldContract = contracts[contractNumber - 1]++; 
+                cout << "oldContract: " << endl; 
+                cout << oldContract << endl;
+                cout << endl;
+
+                cout << "Постфиксный инкремент после:" << endl;
+                cout << contracts[contractNumber - 1]<< endl; 
+                cout << endl;
+
+                cout << "префиксный инкремент до: " << endl;
+                cout << contracts[contractNumber - 1] << endl;
+                cout << endl;
+                
+                cout << "префиксный инкремент после: " << endl;
+                cout<< ++contracts[contractNumber - 1] << endl;
+                cout << endl;
+
 
             } else {
                 cout << "Ошибка: Введен неверный номер контракта." << endl;
             }
-        } catch (const out_of_range& oor) {
-            cerr << "Ошибка: выход за границы диапазона: " << oor.what() << endl;
         } catch (...) {
             cerr << "Ошибка, попробуйте ввести другой номер контракта" << endl;
         }
@@ -354,7 +346,7 @@ void addContract(vector<Contract>& contracts) {
 }
 
 
-//складывает 2 контракта добавляя 2ой вектор в конец первого
+//складывает 2 контракта добавляя 2-ой вектор в конец первого
 void sumContracts(vector<Contract>& contracts) {
     cout << "Сложение" << endl;
 
@@ -367,8 +359,10 @@ void sumContracts(vector<Contract>& contracts) {
         }
 
         // ввод номера контракта для вычислений
-        unsigned num1 = enterChoice("Введите номер первого контракта");
-        unsigned num2 = enterChoice("Введите номер второго контракта");
+
+        int num1, num2;
+        enterNumber(num1, "Введите номер первого контракта");
+        enterNumber(num2, "Введите номер второго контракта");
 
         try {
             if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) { 
@@ -389,7 +383,36 @@ void sumContracts(vector<Contract>& contracts) {
     }
 }
 
+void replaceContract(vector<Contract>& contracts) {
+    if (contracts.empty()) {
+        cout << "Нет контрактов для замены (вектор пуст).\n";
+        return;
+    }
 
+    // Выводим список контрактов с номерами
+    cout << "\nСписок контрактов:\n";
+    for (size_t i = 0; i < contracts.size(); ++i) {
+            cout << "Контракт №" << (i + 1) << "\n";
+            cout << contracts[i] << endl;
+    }
+
+    // Спрашиваем пользователя, какой контракт нужно заменить
+    int contractNumber;
+    enterNumber(contractNumber, "Введите номер контракта для преобразования");
+    try {
+        // Проверяем, что введенный номер контракта корректен
+        if (contractNumber <= contracts.size() && contractNumber > 0) {
+            cout << "Вызываем конструктор преобразования Contract(const string& s1)" << endl;
+
+        } else {
+            cout << "Ошибка: Введен некорректный номер контракта.\n";
+        }
+    } catch (const exception& e) {
+        cerr << "Произошла ошибка: " << e.what() << endl;
+    } catch (...) {
+        cerr << "Произошла неизвестная ошибка.\n";
+    }
+}
 
 void assignmentConstructor(vector<Contract>& contracts) {
     cout << "тест присваивания одного контракта другому" << endl;
@@ -403,8 +426,9 @@ void assignmentConstructor(vector<Contract>& contracts) {
         }
 
         // ввод номера контракта для вычислений
-        unsigned num1 = enterChoice("Введите номер первого контракта (того, который хотите присвоить)");
-        unsigned num2 = enterChoice("Введите номер второго контракта (которому хотите присвоить)");
+        int num1,num2;
+        enterNumber(num1, "Введите номер первого контракта (того, который хотите присвоить)");
+        enterNumber(num2, "Введите номер второго контракта (которому хотите присвоить)");
 
         try {
             if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) { // Adjusted condition
@@ -464,8 +488,9 @@ void compareAverageReSigningDates(vector<Contract>& contracts) {
     }
 
     // Ввод номеров контрактов для сравнения
-    unsigned num1 = enterChoice("Введите номер первого контракта для сравнения: ");
-    unsigned num2 = enterChoice("Введите номер второго контракта для сравнения: ");
+            int num1,num2;
+        enterNumber(num1, "Введите номер первого контракта для сравнения: ");
+        enterNumber(num2, "Введите номер второго контракта для сравнения: ");
 
     try {
         if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) {
@@ -479,15 +504,16 @@ void compareAverageReSigningDates(vector<Contract>& contracts) {
 
             cout << "Средняя дата переподписания для контракта №" << num1 << ": " << avgDate1 << endl;
             cout << "Средняя дата переподписания для контракта №" << num2 << ": " << avgDate2 << endl;
+            cout << endl;
 
  // Сравниваем средние даты
     cout<<"тест операторов сравниения контрактов по средн. дате переподписания (формат вывода: 0 или 1)"<<endl;
-    cout<<"тест оператора < : "<< (avgDate1<avgDate2) <<endl;
-    cout<<"тест оператора > : "<< (avgDate1>avgDate2) <<endl;
-    cout<<"тест оператора <= : "<< (avgDate1<=avgDate2) <<endl;
-    cout<<"тест оператора >= : "<< (avgDate1>=avgDate2) <<endl;
-    cout<<"тест оператора != : "<< (avgDate1!=avgDate2) <<endl;
-    cout<<"тест оператора == : "<< (avgDate1 == avgDate2) <<endl;
+    cout<<"тест оператора < (сравнение "<<avgDate1<< " < " <<avgDate2<<" ?): "<< (avgDate1<avgDate2) <<endl;
+    cout<<"тест оператора > (сравнение "<<avgDate1<< " > " <<avgDate2<<" ?): "<< (avgDate1>avgDate2) <<endl;
+    cout<<"тест оператора <= (сравнение "<<avgDate1<< " <= " <<avgDate2<<" ?): "<< (avgDate1<=avgDate2) <<endl;
+    cout<<"тест оператора >= (сравнение "<<avgDate1<< " >= " <<avgDate2<<" ?): "<< (avgDate1>=avgDate2) <<endl;
+    cout<<"тест оператора != (сравнение "<<avgDate1<< " != " <<avgDate2<<" ?): "<< (avgDate1!=avgDate2) <<endl;
+    cout<<"тест оператора == (сравнение "<<avgDate1<< " == " <<avgDate2<<" ?): "<< (avgDate1 == avgDate2) <<endl;
             
         }
 

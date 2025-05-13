@@ -9,21 +9,7 @@
 using namespace std;
 
 
-//для генерации рандомных имен сторон из 1 заглавной буквы
-
-// string generate_random_name() {
-//     string name;
-//     random_device rd;
-//     mt19937 generator(rd()); //генератор псевдослучайных рандомных чисел
-//     uniform_int_distribution<> dist('A', 'Z'); //диапазон значений
-
-//     for (int i = 0; i < 1; ++i) {
-//         name += static_cast<char>(dist(generator));
-//     }
-//     return name;
-// }
-
-string Contract::generate_random_date_first() {
+string generate_random_date_first() {
     random_device rd;
     mt19937 generator(rd());
     uniform_int_distribution<> year_dist(2020, 2024);
@@ -40,7 +26,7 @@ string Contract::generate_random_date_first() {
     return string(buffer);
 }
 
-string Contract::generate_random_string(int length) {
+string generate_random_string(int length) {
     string result;
     random_device rd;
     mt19937 generator(rd());
@@ -53,7 +39,7 @@ string Contract::generate_random_string(int length) {
 }
 
 
-// Конструктор по умлочанию
+// Конструктор по умолочанию
 Contract::Contract() :
     side1(generate_random_string(1)),       // Случайная сторона 1
     side2(generate_random_string(1)),       // Случайная сторона 2
@@ -71,7 +57,6 @@ Contract::Contract() :
 Contract::Contract(const Contract& other) :
 side1(other.side1), side2(other.side2), signingDate(other.signingDate), duration(other.duration),
     reSigningDates(other.reSigningDates) {}
-
 
 //Оператор присваивания+
 Contract& Contract::operator=(const Contract& other) {
@@ -138,19 +123,16 @@ istream& operator>>(istream& is, Contract& contract) {
     enterDate(contract.signingDate, "Введите дату подписания (YYYY-MM-DD): ");
     enterNumber(contract.duration, "Введите срок действия (дни): ");
 
-    // Get re-signing dates
     contract.reSigningDates.clear();
     int numReSigningDates;
-    cout << "Сколько дат переподписания вы хотите добавить? ";
-    is >> numReSigningDates;
-    is.ignore(numeric_limits<streamsize>::max(), '\n');
+    enterNumber(numReSigningDates, "Сколько дат переподписания вы хотите добавить?");
 
     for (int i = 0; i < numReSigningDates; ++i) {
         string date;
-        cout << "Введите дату переподписания номер " << i + 1 << ": ";
-        getline(is, date);
+        cout << "Дата переподписания № " << i + 1 <<endl;
+        enterDate(contract.signingDate, "Введите дату переподписания");
+        cout<<endl;
         contract.reSigningDates.push_back(date);
     }
-
     return is;
 }
