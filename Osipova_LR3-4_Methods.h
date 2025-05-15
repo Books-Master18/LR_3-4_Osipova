@@ -383,36 +383,53 @@ void sumContracts(vector<Contract>& contracts) {
     }
 }
 
-void replaceContract(vector<Contract>& contracts) {
+// Функция для замены контракта
+void replaceContract(std::vector<Contract>& contracts) {
     if (contracts.empty()) {
-        cout << "Нет контрактов для замены (вектор пуст).\n";
+        cout << "Нет контрактов для преобразования (вектор пуст).\n";
         return;
     }
 
     // Выводим список контрактов с номерами
     cout << "\nСписок контрактов:\n";
     for (size_t i = 0; i < contracts.size(); ++i) {
-            cout << "Контракт №" << (i + 1) << "\n";
-            cout << contracts[i] << endl;
+        cout << "Контракт №" << (i + 1) << "\n";
+        cout << contracts[i] << endl;
     }
 
-    // Спрашиваем пользователя, какой контракт нужно заменить
+    // Запрашиваем у пользователя номер контракта для преобразования
     int contractNumber;
-    enterNumber(contractNumber, "Введите номер контракта для преобразования");
-    try {
-        // Проверяем, что введенный номер контракта корректен
-        if (contractNumber <= contracts.size() && contractNumber > 0) {
-            cout << "Вызываем конструктор преобразования Contract(const string& s1)" << endl;
+    enterNumber(contractNumber, "Введите номер контракта для преобразования: ");
 
-        } else {
-            cout << "Ошибка: Введен некорректный номер контракта.\n";
-        }
-    } catch (const exception& e) {
-        cerr << "Произошла ошибка: " << e.what() << endl;
-    } catch (...) {
-        cerr << "Произошла неизвестная ошибка.\n";
+    if (contractNumber <= 0 || contractNumber > contracts.size()) {
+        cout << "Некорректный номер контракта.\n";
+        return;
     }
+
+    cout << "Вызываем конструктор преобразования" << std::endl;
+
+    // Получаем старый контракт
+    Contract oldContract = contracts[contractNumber - 1];
+
+    // Создаем временный объект, чтобы сгенерировать случайную duration
+    Contract tempContract;
+
+    // Создаем новый контракт, используя конструктор преобразования, передавая duration из временного объекта
+    Contract newContract(tempContract.getDuration());
+
+    // Сохраняем остальные поля из старого контракта
+    newContract.setside1(oldContract.getside1());
+    newContract.setside2(oldContract.getside2());
+    newContract.setSigningDate(oldContract.getSigningDate());
+    newContract.setreSigningDates(oldContract.getReSigningDates());
+
+    // Заменяем старый контракт новым
+    contracts[contractNumber - 1] = newContract;
+
+    cout << "Контракт №" << contractNumber << " успешно заменен (изменена duration на случайное значение, остальные поля остались без изменений).\n";
 }
+
+
 
 void assignmentConstructor(vector<Contract>& contracts) {
     cout << "тест присваивания одного контракта другому" << endl;
@@ -431,8 +448,8 @@ void assignmentConstructor(vector<Contract>& contracts) {
         enterNumber(num2, "Введите номер второго контракта (которому хотите присвоить)");
 
         try {
-            if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) { // Adjusted condition
-                Contract contr = contracts[num2 - 1] = contracts[num1 - 1]; // Subtract 1 for correct index
+            if (num1 <= contracts.size() && num2 <= contracts.size() && num1 > 0 && num2 > 0) { 
+                Contract contr = contracts[num2 - 1] = contracts[num1 - 1]; 
                 cout << "тест присваивания: " << contr << endl;
                 cout << endl;
             } else {

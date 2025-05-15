@@ -50,9 +50,6 @@ Contract::Contract() :
         generate(reSigningDates.begin(), reSigningDates.end(), [&]() { return generate_random_date_first(); });
     }
 
-//   Contract(const string& s1, const string& s2, const string& signingDate, int dur, const vector<string>& reSigning):
-//   side1(s1), side2(s2), signingDate(signingDate), duration(dur) {}  
-
 // Конструктор копирования+
 Contract::Contract(const Contract& other) :
 side1(other.side1), side2(other.side2), signingDate(other.signingDate), duration(other.duration),

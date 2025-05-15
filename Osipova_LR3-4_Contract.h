@@ -30,15 +30,14 @@ public:
     Contract(const Contract& other); 
 
     //Конструктор преобразования
-    // Contract(const string& s1) : Contract() {
-    //   side1 = s1;
-    // }
+    Contract(int dur) : Contract() {
+      duration = dur;
+    }
 
     // деструктор
     ~Contract()=default;
 
     // Get-методы 
-    // int getnumcontract() const { return numcontract; }
     string getside1() const { return side1; }
     string getside2() const { return side2; }
     string getSigningDate() const { return signingDate; }
@@ -52,22 +51,10 @@ public:
     void setSigningDate(const string& date) { signingDate = date; }
     void setDuration(int dur) { duration = dur; }
     void setreSigningDates(const vector<string>& newDates) {reSigningDates =  newDates;} 
-
-    // Объявление функций
-
-     // Объявление displayAllContracts
-    // void displayAllContracts(const vector<Contract>& contracts);
-    // void createDefaultContract(vector<Contract>& contracts);
-    // void createParameterizedContract(vector<Contract>& contracts);
     
     // Метод вычисления средней даты переподписания у одного контракта
     string calculateAverageReSigningDate() const; 
-    // void displayAverageReSigningDates(const vector<Contract>& contracts);
-    // vector<Contract> sortContractsBySigningDate(vector<Contract> contracts);
-    // void displaySortedContracts(const vector<Contract>& contracts);
-    // генерация случаных значений
-    // string generate_random_string(int length); // Функция для генерации случайных строк
-    // string generate_random_date_first(); // Функция для генерации случайной даты
+
 
 
     // перегруженные операции 

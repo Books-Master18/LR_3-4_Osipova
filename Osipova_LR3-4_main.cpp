@@ -46,8 +46,7 @@ int main() {
         }
     cout <<"0. Выход"<< endl;
     while (true){
-        //enterChoice(choice, "Введите выбор пункта");
-        enterNumber(choice, "Введите выбор пункт");
+        enterNumber(choice, "Введите номер пункта: ");
         if (choice == 0)
         {
             std::cout <<"2025 Osipova Aleksandra" << endl;
