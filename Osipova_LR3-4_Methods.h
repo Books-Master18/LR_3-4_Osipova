@@ -385,46 +385,13 @@ void sumContracts(vector<Contract>& contracts) {
 
 // Функция для замены  продолжтельности контракта
 void replaceContract(vector<Contract>& contracts) {
-    if (contracts.empty()) {
-        cout << "Нет контрактов для преобразования (вектор пуст).\n";
-        return;
-    }
 
-    // Выводим список контрактов с номерами
-    cout << "\nСписок контрактов:\n";
-    for (size_t i = 0; i < contracts.size(); ++i) {
-        cout << "Контракт №" << (i + 1) << "\n";
-        cout << contracts[i] << endl;
-    }
-
-    // Запрашиваем у пользователя номер контракта для преобразования
-    int contractNumber;
-    enterNumber(contractNumber, "Введите номер контракта для преобразования: ");
-
-    if (contractNumber <= 0 || contractNumber > contracts.size()) {
-        cout << "Некорректный номер контракта.\n";
-        return;
-    }
-
-    // Получаем старый контракт
-    Contract oldContract = contracts[contractNumber - 1];
-
-    // Создаем временный объект, чтобы сгенерировать случайную duration
-    Contract tempContract;
-
-    // Создаем новый контракт, используя конструктор преобразования, передавая duration из временного объекта
-    Contract newContract(tempContract.getDuration());
-
-    // Сохраняем остальные поля из старого контракта
-    newContract.setside1(oldContract.getside1());
-    newContract.setside2(oldContract.getside2());
-    newContract.setSigningDate(oldContract.getSigningDate());
-    newContract.setreSigningDates(oldContract.getReSigningDates());
-
-    // Заменяем старый контракт новым
-    contracts[contractNumber - 1] = newContract;
-
-    cout << "Контракт №" << contractNumber << " успешно заменен (изменена duration на случайное значение, остальные поля остались без изменений).\n";
+    int dur;
+    enterNumber(dur, "Введите свое число дней продолжительности контракта");
+    Contract newContract = dur;
+    
+    contracts.push_back(newContract);
+    cout << "Контракт №" << contracts.size() << " успешно создан.\n";
     cout << newContract <<endl;
 
 }
