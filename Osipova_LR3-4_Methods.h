@@ -383,8 +383,8 @@ void sumContracts(vector<Contract>& contracts) {
     }
 }
 
-// Функция для замены контракта
-void replaceContract(std::vector<Contract>& contracts) {
+// Функция для замены  продолжтельности контракта
+void replaceContract(vector<Contract>& contracts) {
     if (contracts.empty()) {
         cout << "Нет контрактов для преобразования (вектор пуст).\n";
         return;
@@ -406,8 +406,6 @@ void replaceContract(std::vector<Contract>& contracts) {
         return;
     }
 
-    cout << "Вызываем конструктор преобразования" << std::endl;
-
     // Получаем старый контракт
     Contract oldContract = contracts[contractNumber - 1];
 
@@ -427,6 +425,8 @@ void replaceContract(std::vector<Contract>& contracts) {
     contracts[contractNumber - 1] = newContract;
 
     cout << "Контракт №" << contractNumber << " успешно заменен (изменена duration на случайное значение, остальные поля остались без изменений).\n";
+    cout << newContract <<endl;
+
 }
 
 
